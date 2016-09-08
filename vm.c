@@ -27,7 +27,7 @@ void readInput(FILE * input, int lines);
 int main()
 {
     int lines = 0; //Number of instruction lines
-    FILE * input = fopen("/Users/Jacob/Desktop/School/Fall16/COP3402/COP3402/Project1/Project1/mcode.pl0", "r");
+    FILE * input = fopen("mcode.pl0", "r");
     if(input == NULL){ //Checks for no file
         printf("Error in opening the file");
         exit(0);
