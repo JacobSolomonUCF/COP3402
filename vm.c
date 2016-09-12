@@ -19,10 +19,19 @@ typedef struct {
     int m;  // M
 } instruction;
 
+// Four registers
+int sp; // stack pointer
+int bp; // base pointer
+int pc; // program counter
+instruction ir; // current instruction register
+
+int stack[MAX_STACK_HEIGHT];
 instruction instructions[MAX_CODE_LENGTH];
 
 //Function Prototype(s)
 void readInput(FILE * input, int lines);
+void fetchCycle();
+void executeCycle();
 
 int main()
 {
@@ -65,6 +74,55 @@ void readInput(FILE * input, int lines){
             }
         }
         
+    }
+}
+
+void fetchCycle(){
+    ir = instructions[pc];
+    pc = pc + 1;
+}
+
+void executeCycle() {
+    switch (ir.op) {
+	case LIT:
+	    sp = sp + 1;
+	    stack[sp] = ir.m;
+	    break;
+	case OPR:
+	    
+	case LOD:
+	    sp = sp + 1;
+	    stack[sp] = stack[base(l, bp) + ir.m];
+	    break;
+	case STO:
+	    stack[base(l, bp) + ir.m] = stack[sp];
+	    sp = sp - 1;
+	    break;
+	case CAL:
+	    stack[sp + 1] = 0;
+	    stack[sp + 2] = base(l, bp);
+	    stack[sp + 3] = bp;
+	    stack[sp + 4] = pc;
+	    bp = sp + 1;
+	    pc = ir.m;
+	    break;
+	case INC:
+	    sp = sp + ir.m;
+	    break;
+	case JMP:
+	    pc = sp + ir.m;
+	    break;
+	case JPC:
+	    if (stack[sp] == 0)
+	      pc = ir.m;
+	    sp = sp - 1;
+	    break;
+	case SIO:
+	  if (ir.m == 0)
+	  else if (ir.m == 1)
+	  else if (ir.m == 2)
+	    
+     
     }
 }
 
