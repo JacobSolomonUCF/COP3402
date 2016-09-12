@@ -20,9 +20,9 @@ typedef struct {
 } instruction;
 
 // Four registers
-int sp; // stack pointer
-int bp; // base pointer
-int pc; // program counter
+int sp = 0; // stack pointer
+int bp = 1; // base pointer
+int pc = 0; // program counter
 instruction ir; // current instruction register
 
 int stack[MAX_STACK_HEIGHT];
@@ -89,7 +89,7 @@ void executeCycle() {
 	    stack[sp] = ir.m;
 	    break;
 	case OPR:
-	    
+	    break;
 	case LOD:
 	    sp = sp + 1;
 	    stack[sp] = stack[base(l, bp) + ir.m];
@@ -121,8 +121,7 @@ void executeCycle() {
 	  if (ir.m == 0)
 	  else if (ir.m == 1)
 	  else if (ir.m == 2)
-	    
-     
+	  break;
     }
 }
 
