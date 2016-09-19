@@ -35,22 +35,22 @@ int bp = 1; // base pointer
 int pc = 0; // program counter
 instruction ir; // current instruction register
 
-stack[1] = 0;
-stack[2] = 0;
-stack[3] = 0;
-ir.op = 0;
-ir.l = 0;
-ir.m = 0;
-
 //Function Prototype(s)
 void readInput(FILE * input, int lines);
 void fetchCycle();
 void executeCycle();
-void OPR();
+void operation();
 int base(int level, int b);
 
 int main()
 {
+    stack[1] = 0;
+    stack[2] = 0;
+    stack[3] = 0;
+    ir.op = 0;
+    ir.l = 0;
+    ir.m = 0;
+    
     int lines = 0; //Number of instruction lines
     FILE * input = fopen("mcode.pm0", "r");
     if(input == NULL){ //Checks for no file
@@ -150,7 +150,7 @@ void executeCycle() {
     }
 }
 
-void OPR() {
+void operation() {
     switch(ir.m) {
 	case RET:
 	    sp = bp - 1;
@@ -205,7 +205,7 @@ void OPR() {
 	    break;
 	case GEQ:
 	    sp = sp - 1;
-	    stack[sp] = stack[sp] >-= stack[sp + 1];
+	    stack[sp] = stack[sp] >= stack[sp + 1];
 	    break;
 	}
 }
