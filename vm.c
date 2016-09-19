@@ -32,11 +32,12 @@ instruction instructions[MAX_CODE_LENGTH];
 void readInput(FILE * input, int lines);
 void fetchCycle();
 void executeCycle();
+void OPR();
 
 int main()
 {
     int lines = 0; //Number of instruction lines
-    FILE * input = fopen("mcode.pl0", "r");
+    FILE * input = fopen("mcode.pm0", "r");
     if(input == NULL){ //Checks for no file
         printf("Error in opening the file");
         exit(0);
@@ -89,6 +90,7 @@ void executeCycle() {
 	    stack[sp] = ir.m;
 	    break;
 	case OPR:
+	    OPR();
 	    break;
 	case LOD:
 	    sp = sp + 1;
@@ -123,5 +125,65 @@ void executeCycle() {
 	  else if (ir.m == 2)
 	  break;
     }
+}
+
+void OPR() {
+    switch(ir.m) {
+	case RET:
+	    sp = bp - 1;
+	    pc = stack[sp + 4];
+	    bp = stack[sp + 3];
+	    break;
+	case NEG:
+	    stack[sp] *= -1;
+	    break;
+	case ADD:
+	    sp = sp - 1;
+	    stack[sp] = stack[sp] + stack[sp + 1];
+	    break;
+	case SUB:
+	    sp = sp - 1;
+	    stack[sp] = stack[sp] - stack[sp + 1];
+	    break;
+	case MUL:
+	    sp = sp - 1;
+	    stack[sp] = stack[sp] * stack[sp + 1];
+	    break;
+	case DIV:
+	    sp = sp - 1;
+	    stack[sp] = stack[sp] / stack[sp + 1];
+	    break;
+	case ODD:
+	    stack[sp] = stack[sp] % 2;
+	    break;
+	case MOD:
+	    sp = sp - 1;
+	    stack[sp] = stack[sp] % stack[sp + 1];
+	    break;
+	case EQL:
+	    sp = sp - 1;
+	    stack[sp] = stack[sp] == stack[sp + 1];
+	    break;
+	case NEQ:
+	    sp = sp - 1;
+	    stack[sp] = stack[sp] != stack[sp + 1];
+	    break;
+	case LSS:
+	    sp = sp - 1;
+	    stack[sp] = stack[sp] < stack[sp - 1];
+	    break;
+	case LEQ:
+	    sp = sp - 1;
+	    stack[sp] = stack[sp] <= stack[sp + 1];
+	    break;
+	case GTR:
+	    sp = sp - 1;
+	    stack[sp] = stack[sp] > stack[sp + 1];
+	    break;
+	case GEQ:
+	    sp = sp - 1;
+	    stack[sp] = stack[sp] >-= stack[sp + 1];
+	    break;
+	}
 }
 
