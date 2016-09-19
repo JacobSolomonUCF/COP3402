@@ -19,20 +19,26 @@ typedef struct {
     int m;  // M
 } instruction;
 
+int stack[MAX_STACK_HEIGHT];
+instruction instructions[MAX_CODE_LENGTH];
+
+// initial stack store values
+stack[1] = 0;
+stack[2] = 0;
+stack[3] = 0;
+
 // Four registers
 int sp = 0; // stack pointer
 int bp = 1; // base pointer
 int pc = 0; // program counter
 instruction ir; // current instruction register
 
-int stack[MAX_STACK_HEIGHT];
-instruction instructions[MAX_CODE_LENGTH];
-
 //Function Prototype(s)
 void readInput(FILE * input, int lines);
 void fetchCycle();
 void executeCycle();
 void OPR();
+int base(int level, int b);
 
 int main()
 {
@@ -94,15 +100,15 @@ void executeCycle() {
 	    break;
 	case LOD:
 	    sp = sp + 1;
-	    stack[sp] = stack[base(l, bp) + ir.m];
+	    stack[sp] = stack[base(ir.l, bp) + ir.m];
 	    break;
 	case STO:
-	    stack[base(l, bp) + ir.m] = stack[sp];
+	    stack[base(ir.l, bp) + ir.m] = stack[sp];
 	    sp = sp - 1;
 	    break;
 	case CAL:
 	    stack[sp + 1] = 0;
-	    stack[sp + 2] = base(l, bp);
+	    stack[sp + 2] = base(ir.l, bp);
 	    stack[sp + 3] = bp;
 	    stack[sp + 4] = pc;
 	    bp = sp + 1;
@@ -116,14 +122,22 @@ void executeCycle() {
 	    break;
 	case JPC:
 	    if (stack[sp] == 0)
-	      pc = ir.m;
+	        pc = ir.m;
 	    sp = sp - 1;
 	    break;
 	case SIO:
-	  if (ir.m == 0)
-	  else if (ir.m == 1)
-	  else if (ir.m == 2)
-	  break;
+	    if (ir.m == 0) { // output
+	    	//print stack[sp]
+	    	sp = sp - 1;
+	    }
+	    else if (ir.m == 1) { // input
+	    	sp = sp + 1;
+	    	// read 
+	    }
+	    else if (ir.m == 2) { // halt
+	    	
+	    }
+	    break;
     }
 }
 
@@ -185,5 +199,13 @@ void OPR() {
 	    stack[sp] = stack[sp] >-= stack[sp + 1];
 	    break;
 	}
+}
+
+int base(int level, int b) {
+    while (level > 0) {
+        b = stack[b + 1];
+        level--;
+    }
+    return b;
 }
 
