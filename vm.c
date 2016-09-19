@@ -106,7 +106,7 @@ void executeCycle() {
 	    stack[sp] = ir.m;
 	    break;
 	case 2: // OPR
-	    OPR();
+	    operation();
 	    break;
 	case 3: // LOD
 	    sp = sp + 1;
