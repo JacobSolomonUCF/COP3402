@@ -1,3 +1,10 @@
+// Compiler Builder 1:
+// Matthew Carlino
+// Jacob Solomon
+// 
+//
+//
+
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
@@ -22,16 +29,18 @@ typedef struct {
 int stack[MAX_STACK_HEIGHT];
 instruction instructions[MAX_CODE_LENGTH];
 
-// initial stack store values
-stack[1] = 0;
-stack[2] = 0;
-stack[3] = 0;
-
 // Four registers
 int sp = 0; // stack pointer
 int bp = 1; // base pointer
 int pc = 0; // program counter
 instruction ir; // current instruction register
+
+stack[1] = 0;
+stack[2] = 0;
+stack[3] = 0;
+ir.op = 0;
+ir.l = 0;
+ir.m = 0;
 
 //Function Prototype(s)
 void readInput(FILE * input, int lines);
@@ -149,7 +158,7 @@ void OPR() {
 	    bp = stack[sp + 3];
 	    break;
 	case NEG:
-	    stack[sp] *= -1;
+	    stack[sp] = -stack[sp];
 	    break;
 	case ADD:
 	    sp = sp - 1;
