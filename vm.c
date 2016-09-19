@@ -58,6 +58,7 @@ int main()
         exit(0);
     }
     readInput(input, lines); //Reads input form file, Converts it and outputs to screen
+    fetchCycle();
     
     return 0;
 }
@@ -100,22 +101,22 @@ void fetchCycle(){
 
 void executeCycle() {
     switch (ir.op) {
-	case LIT:
+	case 1: // LIT
 	    sp = sp + 1;
 	    stack[sp] = ir.m;
 	    break;
-	case OPR:
+	case 2: // OPR
 	    OPR();
 	    break;
-	case LOD:
+	case 3: // LOD
 	    sp = sp + 1;
 	    stack[sp] = stack[base(ir.l, bp) + ir.m];
 	    break;
-	case STO:
+	case 4: // STO
 	    stack[base(ir.l, bp) + ir.m] = stack[sp];
 	    sp = sp - 1;
 	    break;
-	case CAL:
+	case 5: // CAL
 	    stack[sp + 1] = 0;
 	    stack[sp + 2] = base(ir.l, bp);
 	    stack[sp + 3] = bp;
@@ -123,18 +124,18 @@ void executeCycle() {
 	    bp = sp + 1;
 	    pc = ir.m;
 	    break;
-	case INC:
+	case 6: // INC
 	    sp = sp + ir.m;
 	    break;
-	case JMP:
+	case 7: // JMP
 	    pc = sp + ir.m;
 	    break;
-	case JPC:
+	case 8: // JPC
 	    if (stack[sp] == 0)
 	        pc = ir.m;
 	    sp = sp - 1;
 	    break;
-	case SIO:
+	case 9: // SIO
 	    if (ir.m == 0) { // output
 	    	//print stack[sp]
 	    	sp = sp - 1;
@@ -152,58 +153,58 @@ void executeCycle() {
 
 void operation() {
     switch(ir.m) {
-	case RET:
+	case 0: // RET
 	    sp = bp - 1;
 	    pc = stack[sp + 4];
 	    bp = stack[sp + 3];
 	    break;
-	case NEG:
+	case 1: // NEG
 	    stack[sp] = -stack[sp];
 	    break;
-	case ADD:
+	case 2: // ADD
 	    sp = sp - 1;
 	    stack[sp] = stack[sp] + stack[sp + 1];
 	    break;
-	case SUB:
+	case 3: // SUB
 	    sp = sp - 1;
 	    stack[sp] = stack[sp] - stack[sp + 1];
 	    break;
-	case MUL:
+	case 4: // MUL
 	    sp = sp - 1;
 	    stack[sp] = stack[sp] * stack[sp + 1];
 	    break;
-	case DIV:
+	case 5: // DIV
 	    sp = sp - 1;
 	    stack[sp] = stack[sp] / stack[sp + 1];
 	    break;
-	case ODD:
+	case 6: //ODD
 	    stack[sp] = stack[sp] % 2;
 	    break;
-	case MOD:
+	case 7: // MOD
 	    sp = sp - 1;
 	    stack[sp] = stack[sp] % stack[sp + 1];
 	    break;
-	case EQL:
+	case 8: // EQL
 	    sp = sp - 1;
 	    stack[sp] = stack[sp] == stack[sp + 1];
 	    break;
-	case NEQ:
+	case 9: // NEQ
 	    sp = sp - 1;
 	    stack[sp] = stack[sp] != stack[sp + 1];
 	    break;
-	case LSS:
+	case 10: // LSS
 	    sp = sp - 1;
 	    stack[sp] = stack[sp] < stack[sp - 1];
 	    break;
-	case LEQ:
+	case 11: // LEQ
 	    sp = sp - 1;
 	    stack[sp] = stack[sp] <= stack[sp + 1];
 	    break;
-	case GTR:
+	case 12: // GTR
 	    sp = sp - 1;
 	    stack[sp] = stack[sp] > stack[sp + 1];
 	    break;
-	case GEQ:
+	case 13: // GEQ
 	    sp = sp - 1;
 	    stack[sp] = stack[sp] >= stack[sp + 1];
 	    break;
