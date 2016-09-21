@@ -35,7 +35,7 @@ int bp = 1; // base pointer
 int pc = 0; // program counter
 instruction ir; // current instruction register
 
-int lines; // made lines a global for easier 
+int lines; // made lines a global for easier access
 
 //Function Prototype(s)
 void readInput(FILE * input);
