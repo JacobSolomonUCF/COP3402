@@ -2,7 +2,7 @@
 // Matthew Carlino
 // Jacob Solomon
 // Joseph Freeman
-//
+// Alex Arwin
 //
 
 #include <stdio.h>
@@ -64,7 +64,7 @@ int main()
     //fetchCycle();
     
     int i;
-    for(i = 0; i < lines - 1; i++) {
+    for(i = 0; i < lines - 1; i++) { //for each line of code read in, perform an execute/fetch
     	fetchCycle();
     	executeCycle();
     	printStack();
@@ -105,7 +105,7 @@ void readInput(FILE * input){
     printf("\nExecution:\n\t\t\t\t\tpc  bp  sp   stack\n\t\t\t\t     0   1   0\n");
 }
 
-void fetchCycle(){
+void fetchCycle(){ // Grab instrution & increment PC
     ir = instructions[pc];
     pc = pc + 1;
 }
@@ -230,7 +230,7 @@ void printStack() {
 
     int i;
     for(i = 1; i <= sp; i++){
-    	if(i == 7 && sp > 7)		// not sure of exact criteria for separation of stack?
+    	if(i == 7 && sp > 7)		// Correct symbol being used. || Confirmed
     	    printf("| ");
         printf("%d ", stack[i]);
     }
@@ -240,7 +240,7 @@ void printStack() {
 }
 
 
-int base(int level, int b) {
+int base(int level, int b) { // Go down 'x' levels
     while (level > 0) {
         b = stack[b + 1];
         level--;
