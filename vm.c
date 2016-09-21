@@ -54,14 +54,14 @@ int main()
     ir.l = 0;
     ir.m = 0;
     
-    int lines = 0; //Number of instruction lines
-    FILE * input = fopen("mcode.pm0", "r");
+    
+    FILE * input = fopen("mcode.pl0", "r");
     if(input == NULL){ //Checks for no file
         printf("Error in opening the file");
         exit(0);
     }
     readInput(input); //Reads input form file, Converts it and outputs to screen
-    fetchCycle();
+    //fetchCycle();
     
     int i;
     for(i = 0; i < lines - 1; i++) {
@@ -102,6 +102,7 @@ void readInput(FILE * input){
         }
         
     }
+    printf("\nExecution:\n\t\t\t\t\tpc  bp  sp   stack\n\t\t\t\t     0   1   0\n");
 }
 
 void fetchCycle(){
@@ -225,10 +226,10 @@ void operation() {
 // Just need to add the operation being executed, line #, l, m
 void printStack() {
 
-    printf("\t\t      %2   %2d   %2d   ", pc, bp, sp);
+    printf("\t\t\t\t    %2d  %2d  %2d   ", pc, bp, sp);
 
     int i;
-    for(i = 0; i < sp; i++){
+    for(i = 1; i <= sp; i++){
     	if(i == 7 && sp > 7)		// not sure of exact criteria for separation of stack?
     	    printf("| ");
         printf("%d ", stack[i]);
