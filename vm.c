@@ -1,7 +1,7 @@
 // Compiler Builder 1:
 // Matthew Carlino
 // Jacob Solomon
-// 
+// Ryan Rossbach
 //
 //
 
@@ -50,7 +50,7 @@ int main()
     ir.op = 0;
     ir.l = 0;
     ir.m = 0;
-    
+
     int lines = 0; //Number of instruction lines
     FILE * input = fopen("mcode.pm0", "r");
     if(input == NULL){ //Checks for no file
@@ -59,24 +59,24 @@ int main()
     }
     readInput(input, lines); //Reads input form file, Converts it and outputs to screen
     fetchCycle();
-    
+
     return 0;
 }
 
 void readInput(FILE * input, int lines){
-    
+
     //Cycles through the file until it reachs EOF. Saves each instruction to the struct
     while(!feof(input)){
         fscanf(input,"%d%d%d", &instructions[lines].op, &instructions[lines].l, &instructions[lines].m);
         lines++;
     }
-    
+
     //Header for output
     printf("PL/0 code:\n\n");
-    
+
     int i = 0;
     for(i=0; i <lines-1;i++){
-        
+
         //Checks if the instruction is one that needs a level
         if(instructions[i].op == 3 ||instructions[i].op == 4 || instructions[i].op == 5  ){
             printf("%4d%4s%3d%4d\n", i,OP[instructions[i].op],instructions[i].l, instructions[i].m);
@@ -90,7 +90,7 @@ void readInput(FILE * input, int lines){
                 printf("%4d%4s%7d\n", i,OP[instructions[i].op], instructions[i].m);
             }
         }
-        
+
     }
 }
 
@@ -142,10 +142,10 @@ void executeCycle() {
 	    }
 	    else if (ir.m == 1) { // input
 	    	sp = sp + 1;
-	    	// read 
+	    	// read
 	    }
 	    else if (ir.m == 2) { // halt
-	    	
+
 	    }
 	    break;
     }
@@ -218,4 +218,3 @@ int base(int level, int b) {
     }
     return b;
 }
-
