@@ -1,7 +1,7 @@
 // Compiler Builder 1:
 // Matthew Carlino
 // Jacob Solomon
-// 
+// Joseph Freeman
 //
 //
 
@@ -35,12 +35,15 @@ int bp = 1; // base pointer
 int pc = 0; // program counter
 instruction ir; // current instruction register
 
+int lines; // made lines a global for easier access
+
 //Function Prototype(s)
-void readInput(FILE * input, int lines);
+void readInput(FILE * input);
 void fetchCycle();
 void executeCycle();
 void operation();
 int base(int level, int b);
+void printStack();
 
 int main()
 {
@@ -57,13 +60,20 @@ int main()
         printf("Error in opening the file");
         exit(0);
     }
-    readInput(input, lines); //Reads input form file, Converts it and outputs to screen
+    readInput(input); //Reads input form file, Converts it and outputs to screen
     fetchCycle();
+    
+    int i;
+    for(i = 0; i < lines - 1; i++) {
+    	fetchCycle();
+    	executeCycle();
+    	printStack();
+    }
     
     return 0;
 }
 
-void readInput(FILE * input, int lines){
+void readInput(FILE * input){
     
     //Cycles through the file until it reachs EOF. Saves each instruction to the struct
     while(!feof(input)){
@@ -210,6 +220,24 @@ void operation() {
 	    break;
 	}
 }
+
+// This is just a huge mess at the moment. It should be cleaned up soon.
+// Just need to add the operation being executed, line #, l, m
+void printStack() {
+
+    printf("\t\t      %2   %2d   %2d   ", pc, bp, sp);
+
+    int i;
+    for(i = 0; i < sp; i++){
+    	if(i == 7 && sp > 7)		// not sure of exact criteria for separation of stack?
+    	    printf("| ");
+        printf("%d ", stack[i]);
+    }
+    printf("\n");
+
+	
+}
+
 
 int base(int level, int b) {
     while (level > 0) {
