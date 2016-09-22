@@ -163,14 +163,13 @@ void executeCycle() {
 	case 9: // SIO
 	    //int temp = 0;
 	    if (ir.m == 0) { // pop stack and print out value
-	    	printf("%2d/n", stack[sp]);
+	    	printf("%2d\n", stack[sp]);
 	    	sp = sp - 1;
 	    }
 	    else if (ir.m == 1) { //read input from user and push it
 	    	sp = sp + 1;
 	    	scanf("%d", &temp);
-	    	printf("  read %d from input", temp);
-	    	printf("/n");
+	    	printf("  read %d from input\n", temp);
 	    	stack[sp] = temp;
 	    }
 	    break;
