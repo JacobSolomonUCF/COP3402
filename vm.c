@@ -3,7 +3,7 @@
 // Jacob Solomon
 // Joseph Freeman
 // Alex Arwin
-//
+// Ryan Rossbach
 
 #include <stdio.h>
 #include <math.h>
@@ -53,8 +53,8 @@ int main(int argc,char *argv[] )
     ir.op = 0;
     ir.l = 0;
     ir.m = 0;
-    
-    
+
+
     FILE * input = fopen(argv[1], "r");
     if(input == NULL){ //Checks for no file
         printf("Error in opening the file");
@@ -62,19 +62,19 @@ int main(int argc,char *argv[] )
     }
     readInput(input); //Reads input form file, Converts it and outputs to screen
     //fetchCycle();
-    
+
     int i;
     for(i = 0; i < lines - 1; i++) { //for each line of code read in, perform an execute/fetch
     	fetchCycle();
         if(ir.op == 3 || ir.op == 4 || ir.op == 5){
             printf("%4d%4s%3d%4d",pc-1, OP[ir.op],ir.l,ir.m);
-            
+
         }else{
             if(ir.op == 9 & ir.m == 2){
                 printf("%4d%4s", pc-1, "HLT");
             }else if(ir.op == 2){
                 printf("%4d%4s ",pc-1,OPR[ir.l]);
-                
+
             }else{
                 printf("%4d%4s%7d",pc-1,OP[ir.op],ir.m);
             }
@@ -82,24 +82,24 @@ int main(int argc,char *argv[] )
         executeCycle();
         printStack();
     }
-    
+
     return 0;
 }
 
 void readInput(FILE * input){
-    
+
     //Cycles through the file until it reachs EOF. Saves each instruction to the struct
     while(!feof(input)){
         fscanf(input,"%d%d%d", &instructions[lines].op, &instructions[lines].l, &instructions[lines].m);
         lines++;
     }
-    
+
     //Header for output
     printf("PL/0 code:\n\n");
-    
+
     int i = 0;
     for(i=0; i <lines-1;i++){
-        
+
         //Checks if the instruction is one that needs a level
         if(instructions[i].op == 3 ||instructions[i].op == 4 || instructions[i].op == 5  ){
             printf("%4d%4s%3d%4d\n", i,OP[instructions[i].op],instructions[i].l, instructions[i].m);
@@ -113,7 +113,7 @@ void readInput(FILE * input){
                 printf("%4d%4s%7d\n", i,OP[instructions[i].op], instructions[i].m);
             }
         }
-        
+
     }
     printf("\nExecution:\n\t\t\tpc  bp  sp   stack\n\t\t\t 0   1   0\n");
 }
@@ -171,7 +171,7 @@ void executeCycle() {
 	    	printf("Enter Value to be pushed:  ");
 	    	scanf("%d", &temp);
 	    	printf("/n");
-	    	stack[sp] = temp; 
+	    	stack[sp] = temp;
 	    }
 	    break;
     }
@@ -254,7 +254,7 @@ void printStack() {
         exit(0);
     }
 
-    
+
 }
 
 
