@@ -20,4 +20,6 @@ Joseph Freeman:
 
 Alex Arwin:
 
-Ryan Rossbach:
+Ryan Rossbach: 
+  Asked questions in class to verify project information
+  Various bugfixes
