@@ -108,7 +108,7 @@ void readInput(FILE * input){
             if(instructions[i].op == 9 && instructions[i].m == 2){
                 printf("%4d%4s\n", i, "HLT");
             }else if(instructions[i].op == 2){              //Checks for OPR instruction and determine which operation it is.
-                printf("%4d%4s\n", i, OPR[instructions[i].l]);
+                printf("%4d%4s\n", i, OPR[instructions[i].m]);
             }else{
                 printf("%4d%4s%7d\n", i,OP[instructions[i].op], instructions[i].m);
             }
