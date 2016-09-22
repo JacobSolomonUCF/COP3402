@@ -147,16 +147,20 @@ void executeCycle() {
 	    sp = sp - 1;
 	    break;
 	case 9: // SIO
-	    if (ir.m == 0) { // output
-	    	//print stack[sp]
+	    int temp;
+	    if (ir.m == 0) { // pop stack and print out value
+	    	printf("%2d/n", stack[sp]);
 	    	sp = sp - 1;
 	    }
-	    else if (ir.m == 1) { // input
+	    else if (ir.m == 1) { //read input from user and push it
 	    	sp = sp + 1;
-	    	// read 
+	    	printf("Enter Value to be pushed:  ");
+	    	scanf("%d", &temp);
+	    	printf("/n");
+	    	stack[sp] = temp; 
 	    }
-	    else if (ir.m == 2) { // halt
-	    	
+	    else if (ir.m == 2) { // halt machine
+	    	exit(0);
 	    }
 	    break;
     }
