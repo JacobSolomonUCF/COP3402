@@ -12,6 +12,9 @@ Matthew Carlino:
   Created the base function
   
 Jacob Solomon:
+  Created the initial file structure
+  Read in from the file along with mcode conversion
+  Helped with output
 
 Joseph Freeman:
 
