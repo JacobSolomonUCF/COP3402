@@ -45,7 +45,7 @@ void operation();
 int base(int level, int b);
 void printStack();
 
-int main()
+int main(int argc,char *argv[] )
 {
     stack[1] = 0;
     stack[2] = 0;
@@ -55,7 +55,7 @@ int main()
     ir.m = 0;
     
     
-    FILE * input = fopen("mcode.pl0", "r");
+    FILE * input = fopen(argv[1], "r");
     if(input == NULL){ //Checks for no file
         printf("Error in opening the file");
         exit(0);
@@ -66,8 +66,21 @@ int main()
     int i;
     for(i = 0; i < lines - 1; i++) { //for each line of code read in, perform an execute/fetch
     	fetchCycle();
-    	executeCycle();
-    	printStack();
+        if(ir.op == 3 || ir.op == 4 || ir.op == 5){
+            printf("%4d%4s%3d%4d",pc-1, OP[ir.op],ir.l,ir.m);
+            
+        }else{
+            if(ir.op == 9 & ir.m == 2){
+                printf("%4d%4s\t", pc-1, "HLT");
+            }else if(ir.op == 2){
+                printf("%4d%4s\t ",pc-1,OPR[ir.l]);
+                
+            }else{
+                printf("%4d%4s%7d",pc-1,OP[ir.op],ir.m);
+            }
+        }
+        executeCycle();
+        printStack();
     }
     
     return 0;
@@ -111,6 +124,7 @@ void fetchCycle(){ // Grab instrution & increment PC
 }
 
 void executeCycle() {
+    int temp = 0;
     switch (ir.op) {
 	case 1: // LIT
 	    sp = sp + 1;
@@ -147,7 +161,7 @@ void executeCycle() {
 	    sp = sp - 1;
 	    break;
 	case 9: // SIO
-	    int temp;
+	    //int temp = 0;
 	    if (ir.m == 0) { // pop stack and print out value
 	    	printf("%2d/n", stack[sp]);
 	    	sp = sp - 1;
@@ -158,9 +172,6 @@ void executeCycle() {
 	    	scanf("%d", &temp);
 	    	printf("/n");
 	    	stack[sp] = temp; 
-	    }
-	    else if (ir.m == 2) { // halt machine
-	    	exit(0);
 	    }
 	    break;
     }
@@ -230,7 +241,7 @@ void operation() {
 // Just need to add the operation being executed, line #, l, m
 void printStack() {
 
-    printf("\t\t\t\t    %2d  %2d  %2d   ", pc, bp, sp);
+    printf("\t\t%2d  %2d  %2d   ", pc, bp, sp);
 
     int i;
     for(i = 1; i <= sp; i++){
@@ -239,8 +250,11 @@ void printStack() {
         printf("%d ", stack[i]);
     }
     printf("\n");
+    if(ir.op == 9 && ir.m == 2){
+        exit(0);
+    }
 
-	
+    
 }
 
 
