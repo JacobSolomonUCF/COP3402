@@ -168,8 +168,8 @@ void executeCycle() {
 	    }
 	    else if (ir.m == 1) { //read input from user and push it
 	    	sp = sp + 1;
-	    	printf("Enter Value to be pushed:  ");
 	    	scanf("%d", &temp);
+	    	printf("  read %d from input", temp);
 	    	printf("/n");
 	    	stack[sp] = temp;
 	    }
