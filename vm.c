@@ -115,7 +115,7 @@ void readInput(FILE * input){
         }
         
     }
-    printf("\nExecution:\n\t\t\t\t\tpc  bp  sp   stack\n\t\t\t\t     0   1   0\n");
+    printf("\nExecution:\n\t\t\tpc  bp  sp   stack\n\t\t\t 0   1   0\n");
 }
 
 void fetchCycle(){ // Grab instrution & increment PC
