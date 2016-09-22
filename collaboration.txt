@@ -6,7 +6,11 @@
 // Ryan Rossbach
 
 Matthew Carlino:
-
+  Created FetchCycle function
+  Created executeCycle function and created most of the switch cases
+  Created operation function and created all of the switch cases
+  Created the base function
+  
 Jacob Solomon:
 
 Joseph Freeman:
