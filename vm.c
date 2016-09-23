@@ -76,7 +76,10 @@ int main(int argc,char *argv[] )
                 printf("%4d%4s ",pc-1,OPR[ir.l]);
 
             }else{
-                printf("%4d%4s%7d",pc-1,OP[ir.op],ir.m);
+            	if (ir.m == 1)
+		    printf("%4d%4s", pc-1, "IN");
+		else
+		    printf("%4d%4s", pc-1, "OUT");
             }
         }
         executeCycle();
@@ -110,7 +113,10 @@ void readInput(FILE * input){
             }else if(instructions[i].op == 2){              //Checks for OPR instruction and determine which operation it is.
                 printf("%4d%4s\n", i, OPR[instructions[i].m]);
             }else{
-                printf("%4d%4s%7d\n", i,OP[instructions[i].op], instructions[i].m);
+            	if (instructions[i].m == 1)
+		    printf("%4d%4s\n", i, "IN");
+		else
+		    printf("%4d%4s\n", i, "OUT");
             }
         }
 
@@ -163,13 +169,13 @@ void executeCycle() {
 	case 9: // SIO
 	    //int temp = 0;
 	    if (ir.m == 0) { // pop stack and print out value
-	    	printf("%2d\n", stack[sp]);
+	    	printf("\t\t%2d\n", stack[sp]);
 	    	sp = sp - 1;
 	    }
 	    else if (ir.m == 1) { //read input from user and push it
 	    	sp = sp + 1;
 	    	scanf("%d", &temp);
-	    	printf("  read %d from input\n", temp);
+	    	printf("  \t\tread %d from input\n", temp);
 	    	stack[sp] = temp;
 	    }
 	    break;
