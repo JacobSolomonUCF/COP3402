@@ -73,7 +73,7 @@ int main(int argc,char *argv[] )
             if(ir.op == 9 & ir.m == 2){
                 printf("%4d%4s", pc-1, "HLT");
             }else if(ir.op == 2){
-                printf("%4d%4s ",pc-1,OPR[ir.l]);
+                printf("%4d%4s ",pc-1,OPR[ir.m]);
 
             }else{
             	if (OP[ir.op] == "SIO" && ir.m == 1)
