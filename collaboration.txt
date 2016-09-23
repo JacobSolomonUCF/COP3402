@@ -19,6 +19,13 @@ Jacob Solomon:
 Joseph Freeman:
 
 Alex Arwin:
+Gave initial code outline for the file read / stack setup..
+  This was later adjusted to meet requirements, this was the first push
+  onto git. Later changed and adjusted.
+Fixed some minor code errors
+Adjusted whitespace/tabbing
+Added functionality for part of the Switch Function
+Comfirmed two questions about case 9 of the switch function
 
 Ryan Rossbach: 
   Asked questions in class to verify project information
