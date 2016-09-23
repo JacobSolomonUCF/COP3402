@@ -17,6 +17,9 @@ Jacob Solomon:
   Helped with output
 
 Joseph Freeman:
+  Created printStack function for output
+  Adjusted code for functionality / readability
+  Slight changes in main function 
 
 Alex Arwin:
 Gave initial code outline for the file read / stack setup..
