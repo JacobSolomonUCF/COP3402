@@ -254,7 +254,7 @@ void printStack() {
 
     int i;
     for(i = 1; i <= sp; i++){
-    	if(i == 7 && sp > 7)		// Correct symbol being used. || Confirmed
+    	if(i == bp && sp > bp && bp > 1)	// Correct symbol being used. || Confirmed
     	    printf("| ");
         printf("%d ", stack[i]);
     }
