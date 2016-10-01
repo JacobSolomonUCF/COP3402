@@ -10,6 +10,18 @@
 #include <string.h>
 #include <stdlib.h>
 
+// names of reserved words
+char *keyword[] = {
+    	"null", "begin", "call", "const", "do", "else", "end", "if",
+    	"odd", "procedure", "read", "then", "var", "while", "write"
+};
+
+// types of reserved words
+int keyword_type[] = {
+    	nul, beginsym, callsym, constsym, dosym, elsesym, endsym,
+    	ifsym, oddsym, procsym, readsym, thensym, varsym, whilesym, writesym
+};
+
 typedef enum token
 {
     	nulsym = 1, identsym = 2, numbersym = 3, plussym = 4, minussym = 5,
