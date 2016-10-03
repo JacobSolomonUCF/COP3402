@@ -9,6 +9,7 @@
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 // names of reserved words
 char *keyword[] = {
@@ -36,9 +37,11 @@ typedef enum token
 // chose arbitrary length 
 // TODO find max input size that can be giving to us
 char fileInput[10000];
+int tokens[10000];
 
 //Number of chars in the input file
 int numOfChars = 0;
+int numOfTokens = 0;
 
 // Function Prototype(s)
 void readInput(FILE * input);
@@ -120,5 +123,205 @@ void readInput(FILE * input){
 		fscanf(input, "%c", &fileInput[numOfChars++]);
     	}
     
-    fclose(input);
+    	fclose(input);
+	
+	// runs through input array and stores token values in tokens array
+	for (i = 0; i < numOfChars; i++)
+	{
+	    // continues past comments
+	    if (fileInput[i] == '/' && fileInput[i + 1] == '*')
+	    {
+		j = i + 1;
+
+		while (!(fileInput[j] == '*' && fileInput[j + 1] == '/'))
+		    j++;
+
+		i = j + 1;
+		continue;
+	    }
+
+	    // continues past white space
+	    if (fileInput[i] == ' ')
+		continue;
+
+	    // continues past newline
+	    if (fileInput[i] == '\n')
+		continue;
+
+	    // continues past tab space
+	    if (fileInput[i] == '\t')
+		continue;
+
+	    // puts reserved words token values in tokens array
+	    if (isalpha(fileInput[i]))
+	    {
+		switch (fileInput[i])
+		{
+		    case 'n':
+			if ((fileInput[i + 1] == 'u') &&
+			    (fileInput[i + 2] == 'l') &&
+			    (fileInput[i + 3] == 'l'))
+			{
+			    i = i + 3;
+			    tokens[numOfTokens] = nulsym;
+			    numOfTokens++;
+			    continue;
+			}
+
+		    case 'b':
+			if ((fileInput[i + 1] == 'e') &&
+			    (fileInput[i + 2] == 'g') &&
+			    (fileInput[i + 3] == 'i') &&
+			    (fileInput[i + 4] == 'n'))
+			{
+			    i = i + 4;
+			    tokens[numOfTokens] = beginsym;
+			    numOfTokens++;
+			    continue;
+			}
+
+		    case 'c':
+			if ((fileInput[i + 1] == 'a') &&
+			    (fileInput[i + 2] == 'l') &&
+			    (fileInput[i + 3] == 'l'))
+			    {
+				i = i + 3;
+				tokens[numOfTokens] = callsym;
+				numOfTokens++;
+				continue;
+			    }
+			else if ((fileInput[i + 1] == 'o') &&
+			    (fileInput[i + 2] == 'n') &&
+			    (fileInput[i + 3] == 's') &&
+			    (fileInput[i + 4] == 't'))
+			    {
+				i = i + 4;
+				tokens[numOfTokens] = constsym;
+				numOfTokens++;
+				continue;
+			    }
+
+		    case 'd':
+			if (fileInput[i + 1] == 'o')
+			{
+			    i = i + 1;
+			    tokens[numOfTokens] = dosym;
+			    numOfTokens++;
+			    continue;
+			}
+
+		    case 'e':
+			if ((fileInput[i + 1] == 'l') &&
+			    (fileInput[i + 2] == 's') &&
+			    (fileInput[i + 3] == 'e'))
+			    {
+				i = i + 3;
+				tokens[numOfTokens] = elsesym;
+				numOfTokens++;
+				continue;
+			    }
+			else if ((fileInput[i + 1] == 'n') &&
+			    (fileInput[i + 2] == 'd'))
+			    {
+				i = i + 2;
+				tokens[numOfTokens] = endsym;
+				numOfTokens++;
+				continue;
+			    }
+
+		    case 'i':
+			if (fileInput[i + 1] == 'f')
+			{
+			    i = i + 1;
+			    tokens[numOfTokens] = ifsym;
+			    numOfTokens++;
+			    continue;
+			}
+
+		    case 'o':
+			if ((fileInput[i + 1] == 'd') &&
+			    (fileInput[i + 2] == 'd'))
+			{
+			    i = i + 2;
+			    tokens[numOfTokens] = oddsym;
+			    numOfTokens++;
+			    continue;
+			}
+
+		    case 'p':
+			if ((fileInput[i + 1] == 'r') &&
+			    (fileInput[i + 2] == 'o') &&
+			    (fileInput[i + 3] == 'c') &&
+			    (fileInput[i + 4] == 'e') &&
+			    (fileInput[i + 5] == 'd') &&
+			    (fileInput[i + 6] == 'u') &&
+			    (fileInput[i + 7] == 'r') &&
+			    (fileInput[i + 8] == 'e'))
+			{
+			    i = i + 8;
+			    tokens[numOfTokens] = procsym;
+			    numOfTokens++;
+			    continue;
+			}
+
+		    case 'r':
+			if ((fileInput[i + 1] == 'e') &&
+			    (fileInput[i + 2] == 'a') &&
+			    (fileInput[i + 3] == 'd'))
+			{
+			    i = i + 3;
+			    tokens[numOfTokens] = readsym;
+			    numOfTokens++;
+			    continue;
+			}
+
+		    case 't':
+			if ((fileInput[i + 1] == 'h') &&
+			    (fileInput[i + 2] == 'e') &&
+			    (fileInput[i + 3] == 'n'))
+			{
+			    i = i + 3;
+			    tokens[numOfTokens] = thensym;
+			    numOfTokens++;
+			    continue;
+			}
+
+		    case 'v':
+			if ((fileInput[i + 1] == 'a') &&
+			    (fileInput[i + 2] == 'r'))
+			{
+			    i = i + 2;
+			    tokens[numOfTokens] = varsym;
+			    numOfTokens++;
+			    continue;
+			}
+
+		    case 'w':
+			if ((fileInput[i + 1] == 'h') &&
+			    (fileInput[i + 2] == 'i') &&
+			    (fileInput[i + 3] == 'l') &&
+			    (fileInput[i + 4] == 'e'))
+			{
+			    i = i + 4;
+			    tokens[numOfTokens] = whilesym;
+			    numOfTokens++;
+			    continue;
+			}
+			else if ((fileInput[i + 1] == 'r') &&
+			    (fileInput[i + 2] == 'i') &&
+			    (fileInput[i + 3] == 't') &&
+			    (fileInput[i + 4] == 'e'))
+			{
+			    i = i + 4;
+			    tokens[numOfTokens] = writesym;
+			    numOfTokens++;
+			    continue;
+			}
+
+		    default:
+			break;
+		}
+	    }
+    
+	}
 }
