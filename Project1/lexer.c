@@ -11,19 +11,6 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-// names of reserved words
-char *keyword[] = {
-    	"null", "begin", "call", "const", "do", "else", "end", "if",
-    	"odd", "procedure", "read", "then", "var", "while", "write"
-};
-
-
-//This was giving compile errors. Commented out for now.
-/*int keyword_type[] = {
-    	nul, beginsym, callsym, constsym, dosym, elsesym, endsym,
-    	ifsym, oddsym, procsym, readsym, thensym, varsym, whilesym, writesym
-};*/
-
 typedef enum token
 {
     	nulsym = 1, identsym = 2, numbersym = 3, plussym = 4, minussym = 5,
@@ -34,9 +21,6 @@ typedef enum token
     	readsym = 32, elsesym = 33
 }token_type;
 
-
-// chose arbitrary length
-// TODO find max input size that can be giving to us
 char fileInput[10000];
 
 //Number of chars in the input file
@@ -58,13 +42,11 @@ int isID(char c);
 
 int main(int argc, char *argv[])
 {
-    //FILE* input = fopen(argv[1], "r");
-    FILE * input = fopen("lexerin1.txt", "r");
+    FILE * input = fopen(argv[1], "r");
     if (input == NULL)
     {
-        input = fopen(argv[1], "r");
-		//printf("Error in opening the file");
-		//exit(0);
+	printf("Error in opening the file");
+	exit(0);
     }
 
     readInput(input); //Reads in the input from file
@@ -82,7 +64,7 @@ int main(int argc, char *argv[])
 
         // exits if identifer is longer than 12 characters
         if(strlen(single) > 12) {
-            printf("Error: identifier \"%s\"' ' too long\n", single);
+            printf("Error: identifier \"%s\" too long\n", single);
             exit(0);
         }
 
@@ -90,11 +72,14 @@ int main(int argc, char *argv[])
             if(tflag ==  0){
                 test = tokenID(single);
                 if(test != 0) {
-                    for(i = 0; i < 8; i++)
-                        if(isID(single[i]))
-                            printf("%c", single[i]);
+                    for(i = 0; i < 12; i++)
+			if (i < singleLength)
+			    if(isID(single[i]))
+				printf("%c", single[i]);
                             else
                                 printf(" ");
+			else
+			printf(" ");
                     printf("%8d\n",test);
                 }
             }
@@ -316,7 +301,7 @@ char *singleToken(char cleanInput[]){ //Trims the clean input to only 1 token
     char *single;
     single = (char*)malloc(numOfChars);
     int i = 0;
-    singleLength = 1;
+    singleLength = 0;
     do{
         switch (cleanInput[currentPos]) {
 
@@ -330,10 +315,10 @@ char *singleToken(char cleanInput[]){ //Trims the clean input to only 1 token
             case '-':
             case '*':
             case '/':
-                 singleLength = 1;
                 if (i != 0) {
                     return (char*)single;
                 }else{
+		    singleLength = 1;
                     single[i] = cleanInput[currentPos];
                     currentPos++;
                     return (char*)single;
@@ -341,15 +326,16 @@ char *singleToken(char cleanInput[]){ //Trims the clean input to only 1 token
 
             //The following cases have specific output based on the next char
             case '<':
-                singleLength = 1;
                 if (i != 0) {
                     return (char*)single;
                 }else{
                     if (cleanInput[currentPos+1] != '=' || cleanInput[currentPos+1] != '>') {
                         single[i] = cleanInput[currentPos];
                         currentPos++;
+			singleLength = 1;
                         return (char*)single;
                     }else{
+			singleLength = 2;
                         single[i] = cleanInput[currentPos];
                         single[i+1] = cleanInput[currentPos+1];
                         currentPos = currentPos+2;
@@ -358,35 +344,33 @@ char *singleToken(char cleanInput[]){ //Trims the clean input to only 1 token
                 }
 
             case ':':
-                singleLength = 2;
                 if (i != 0) {
-//                    singleLength = 1;
                     return (char*)single;
                 }else{
                     if (cleanInput[currentPos+1] != '=') {
                         single[i] = cleanInput[currentPos];
                         currentPos++;
-                        singleLength = 2;
+                        singleLength = 1;
                         return (char*)single;
                     }else{
                         single[i] = cleanInput[currentPos];
                         single[i+1] = cleanInput[currentPos+1];
                         currentPos = currentPos+2;
-                        singleLength = 1;
+                        singleLength = 2;
                         return (char*)single;
                     }
                 }
             case '>':
-                singleLength = 1;
                 if (i != 0) {
                     return (char*)single;
                 }else{
                     if (cleanInput[currentPos+1] != '=') {
-                        singleLength = 2;
+                        singleLength = 1;
                         single[i] = cleanInput[currentPos];
                         currentPos++;
                         return (char*)single;
                     }else{
+			singleLength = 2;
                         single[i] = cleanInput[currentPos];
                         single[i+1] = cleanInput[currentPos+1];
                         currentPos = currentPos+2;
@@ -428,7 +412,7 @@ char *singleToken(char cleanInput[]){ //Trims the clean input to only 1 token
                 single[i] = cleanInput[currentPos];
                 currentPos++;
                 i++;
-                singleLength = 1;
+                singleLength++;
                 break;
             default:
                 tflag = 1;
