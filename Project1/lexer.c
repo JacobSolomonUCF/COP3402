@@ -34,294 +34,412 @@ typedef enum token
     	readsym = 32, elsesym = 33
 }token_type;
 
-// chose arbitrary length 
+
+// chose arbitrary length
 // TODO find max input size that can be giving to us
 char fileInput[10000];
-int tokens[10000];
 
 //Number of chars in the input file
 int numOfChars = 0;
-int numOfTokens = 0;
+//Current position in char array
+int currentPos = 0;
+
+int test;
+int tflag = 0;
+int singleLength;
 
 // Function Prototype(s)
-void readInput(FILE * input);
+void readInput(FILE * input); //Reads input from file
 void printSource(char *argv[]); // print source code when --source used as argv
-void printClean(char *argv[]); // print source code w/o comments when --clean used as argv
+char *inputClean(char *argv[], char cleanInput[]); // print source code w/o comments when --clean used as argv
+char *singleToken(char cleanInput[]);
+int tokenID(char *token);
+int isID(char c);
 
-int main(int argc, char *argv[]) 
+int main(int argc, char *argv[])
 {
-    FILE * input = fopen(argv[1], "r");
+    //FILE* input = fopen(argv[1], "r");
+    FILE * input = fopen("lexerin1.txt", "r");
     if (input == NULL)
-    	{
-		printf("Error in opening the file");
-		exit(0);
-    	}
-    readInput(input);
-    printSource(argv);
-    printClean(argv);
-    
-    
-    
+    {
+        input = fopen(argv[1], "r");
+		//printf("Error in opening the file");
+		//exit(0);
+    }
+
+    readInput(input); //Reads in the input from file
+    printSource(argv); //Prints the --source
+
+    char *cleanInput;
+    cleanInput = (char*)malloc(numOfChars);
+    cleanInput = inputClean(argv, cleanInput); //Generates the clean input
+
+    printf("\ntokens:\n-------\n");
+    char *single;
+    while(currentPos < numOfChars){
+        singleLength = 0;
+        single = singleToken(cleanInput);
+
+        // exits if identifer is longer than 12 characters
+        if(strlen(single) > 12) {
+            printf("Error: identifier \"%s\"' ' too long\n", single);
+            exit(0);
+        }
+
+        int i;
+            if(tflag ==  0){
+                test = tokenID(single);
+                if(test != 0) {
+                    for(i = 0; i < 8; i++)
+                        if(isID(single[i]))
+                            printf("%c", single[i]);
+                            else
+                                printf(" ");
+                    printf("%8d\n",test);
+                }
+            }
+    }
+}
+
+// returns 1 c is [a-zA-Z0-9] OR an operator or other approved characters
+int isID(char c) {
+
+    switch(c) {
+        case 'a'...'z':
+            return 1;
+        case '0'...'9':
+            return 1;
+        case '+':
+            return 1;
+        case '-':
+            return 1;
+        case '*':
+            return 1;
+        case '/':
+            return 1;
+        case '<':
+            return 1;
+        case '=':
+            return 1;
+        case '>':
+            return 1;
+        case ':':
+            return 1;
+        case '(':
+            return 1;
+        case ')':
+            return 1;
+        case '.':
+            return 1;
+        case ';':
+            return 1;
+        case ',':
+            return 1;
+        default:
+            return 0;
+    }
+
+    return 0;
+}
+
+int tokenID(char* token){
+    int ASCII = 0;
+    int largestNum = 65535;
+    int num = 0;
+    int i = 0;
+    for(i = 0; token[i]; i++){ //Converts to lower case
+        token[i] = tolower(token[i]);
+    }
+    i = 0;
+    switch (*token) {
+        case '+':
+            return plussym;
+        case '-':
+            return minussym;
+        case '*':
+            return multsym;
+        case '/':
+            return slashsym;
+        case '<':
+            if(token[i+1] == '=')
+                return leqsym;
+            else if(token[i+1] == '>')
+                return neqsym;
+            else
+                return lessym;
+        case '=':
+            return eqsym;
+        case '>':
+            if(token[i+1] == '=')
+                return geqsym;
+            else
+                return gtrsym;
+        case ':':
+            if(token[i+1] == '='){
+                return becomessym;
+            }else
+                return 0;
+        case '(':
+            return lparentsym;
+        case ')':
+            return rparentsym;
+        case ',':
+            return commasym;
+        case '.':
+            return periodsym;
+        case ';':
+            return semicolonsym;
+        case 'a'...'z':
+            if(strcmp(token, "odd") == 0)
+                return oddsym;
+            if(strcmp(token, "begin") == 0)
+                return beginsym;
+            if(strcmp(token, "end")== 0)
+                return endsym;
+            if(strcmp(token, "if") == 0)
+                return ifsym;
+            if(strcmp(token, "then") == 0)
+                return thensym;
+            if(strcmp(token, "while") == 0)
+                return whilesym;
+            if(strcmp(token, "do") == 0)
+                return dosym;
+            if(strcmp(token, "call") == 0)
+                return callsym;
+            if(strcmp(token, "const") == 0)
+                return constsym;
+            if(strcmp(token, "var") == 0)
+                return varsym;
+            if(strcmp(token, "procedure") == 0)
+                return procsym;
+            if(strcmp(token, "write") == 0)
+                return writesym;
+            if(strcmp(token, "read") == 0)
+                return readsym;
+            if(strcmp(token, "else") == 0)
+                return elsesym;
+            return identsym;
+        case '1'...'9':
+            for(i = 0; i<strlen(token);i++){
+                ASCII = (int)token[i];
+                if(ASCII>=97 && ASCII<= 122){
+                    printf("\nerror '%s' is invalid identifier\n", token);
+                    exit(0);
+                }
+            }
+
+            if(strlen(token) > 12)
+                printf("Error: Identifier is too long");
+            num = atoi(token);
+            if(abs(num) > largestNum){
+                printf("\nThe number '%d' is greater than 2^16-1 or less than -2^16-1\n", num);
+                exit(0);
+            }else{
+                return numbersym;
+            }
+        default:
+            break;
+    }
+
+    return 0;
+
 }
 
 void printSource(char *argv[]){ //Prints the source input
     int flag = 0;
-    
+
     if(argv[2] != NULL && strcmp(argv[2], "--source") == 0){ //Checks for --source in argv
         flag = 1;
     }else if(argv[3] != NULL && strcmp(argv[3], "--source") == 0){
         flag = 1;
     }
-    
+
     if(flag == 1){
         printf("\nsource code:\n------------\n%s",fileInput);
     }
 }
 
-void printClean(char *argv[]){ //Prints the input without comments
+char *inputClean(char *argv[], char cleanInput[]){ //Trims the comments from source code and prints to terminal if required
+
     int flag = 0, i = 0;
     int cflag = 0;
-    char cleanInput[numOfChars];
-    
+    char *clean;
+    clean = (char*)malloc(numOfChars);
+
     if(argv[2] != NULL && strcmp(argv[2], "--clean") == 0){
         flag = 1;
     }else if(argv[3] != NULL && strcmp(argv[3], "--clean") == 0){
         flag = 1;
     }
-    
-    if(flag == 1){
-        for(i =0; i<numOfChars; i++){
-            if(fileInput[i] == '/' && fileInput[i+1] == '*'){ //Checks for start of comment
-                cleanInput[i] = ' ';
-                cleanInput[i+1] = ' ';
-                i = i+2;
-                
-                while (cflag != 1) { //Cycles through putting blank space where the comment text is
-                    if(fileInput[i] == '*' && fileInput[i+1] == '/'){ //Checks for closing comment
-                        cflag = 1;
-                        fileInput[i] = ' ';
-                        fileInput[i+1] = ' ';
-                    }else{
-                        cleanInput[i] = ' ';
-                        i++;
-                    }
-                    
+
+    for(i =0; i<numOfChars; i++){
+        if(fileInput[i] == '/' && fileInput[i+1] == '*'){ //Checks for start of comment
+            clean[i] = ' ';
+            clean[i+1] = ' ';
+            i = i+2;
+
+            while (cflag != 1) { //Cycles through putting blank space where the comment text is
+                if(fileInput[i] == '*' && fileInput[i+1] == '/'){ //Checks for closing comment
+                    cflag = 1;
+                    fileInput[i] = ' ';
+                    fileInput[i+1] = ' ';
+                }else{
+                    clean[i] = ' ';
+                    i++;
                 }
-                
+
+                }
             }
-            cleanInput[i] = fileInput[i];
-        }
-        printf("\nsource code without comments:\n------------\n%s",cleanInput);
-    
+        clean[i] = fileInput[i];
+
     }
+    if(flag == 1){
+        printf("\nsource code without comments:\n------------\n%s",clean);
+    }
+
+    return (char*)clean;
 }
+
 void readInput(FILE * input){
-	
+
     	while (!feof(input))
     	{
 		// puts every char from input file into the array
 		fscanf(input, "%c", &fileInput[numOfChars++]);
     	}
-    
-    	fclose(input);
-	
-	// runs through input array and stores token values in tokens array
-	for (i = 0; i < numOfChars; i++)
-	{
-	    // continues past comments
-	    if (fileInput[i] == '/' && fileInput[i + 1] == '*')
-	    {
-		j = i + 1;
 
-		while (!(fileInput[j] == '*' && fileInput[j + 1] == '/'))
-		    j++;
-
-		i = j + 1;
-		continue;
-	    }
-
-	    // continues past white space
-	    if (fileInput[i] == ' ')
-		continue;
-
-	    // continues past newline
-	    if (fileInput[i] == '\n')
-		continue;
-
-	    // continues past tab space
-	    if (fileInput[i] == '\t')
-		continue;
-
-	    // puts reserved words token values in tokens array
-	    if (isalpha(fileInput[i]))
-	    {
-		switch (fileInput[i])
-		{
-		    case 'n':
-			if ((fileInput[i + 1] == 'u') &&
-			    (fileInput[i + 2] == 'l') &&
-			    (fileInput[i + 3] == 'l'))
-			{
-			    i = i + 3;
-			    tokens[numOfTokens] = nulsym;
-			    numOfTokens++;
-			    continue;
-			}
-
-		    case 'b':
-			if ((fileInput[i + 1] == 'e') &&
-			    (fileInput[i + 2] == 'g') &&
-			    (fileInput[i + 3] == 'i') &&
-			    (fileInput[i + 4] == 'n'))
-			{
-			    i = i + 4;
-			    tokens[numOfTokens] = beginsym;
-			    numOfTokens++;
-			    continue;
-			}
-
-		    case 'c':
-			if ((fileInput[i + 1] == 'a') &&
-			    (fileInput[i + 2] == 'l') &&
-			    (fileInput[i + 3] == 'l'))
-			    {
-				i = i + 3;
-				tokens[numOfTokens] = callsym;
-				numOfTokens++;
-				continue;
-			    }
-			else if ((fileInput[i + 1] == 'o') &&
-			    (fileInput[i + 2] == 'n') &&
-			    (fileInput[i + 3] == 's') &&
-			    (fileInput[i + 4] == 't'))
-			    {
-				i = i + 4;
-				tokens[numOfTokens] = constsym;
-				numOfTokens++;
-				continue;
-			    }
-
-		    case 'd':
-			if (fileInput[i + 1] == 'o')
-			{
-			    i = i + 1;
-			    tokens[numOfTokens] = dosym;
-			    numOfTokens++;
-			    continue;
-			}
-
-		    case 'e':
-			if ((fileInput[i + 1] == 'l') &&
-			    (fileInput[i + 2] == 's') &&
-			    (fileInput[i + 3] == 'e'))
-			    {
-				i = i + 3;
-				tokens[numOfTokens] = elsesym;
-				numOfTokens++;
-				continue;
-			    }
-			else if ((fileInput[i + 1] == 'n') &&
-			    (fileInput[i + 2] == 'd'))
-			    {
-				i = i + 2;
-				tokens[numOfTokens] = endsym;
-				numOfTokens++;
-				continue;
-			    }
-
-		    case 'i':
-			if (fileInput[i + 1] == 'f')
-			{
-			    i = i + 1;
-			    tokens[numOfTokens] = ifsym;
-			    numOfTokens++;
-			    continue;
-			}
-
-		    case 'o':
-			if ((fileInput[i + 1] == 'd') &&
-			    (fileInput[i + 2] == 'd'))
-			{
-			    i = i + 2;
-			    tokens[numOfTokens] = oddsym;
-			    numOfTokens++;
-			    continue;
-			}
-
-		    case 'p':
-			if ((fileInput[i + 1] == 'r') &&
-			    (fileInput[i + 2] == 'o') &&
-			    (fileInput[i + 3] == 'c') &&
-			    (fileInput[i + 4] == 'e') &&
-			    (fileInput[i + 5] == 'd') &&
-			    (fileInput[i + 6] == 'u') &&
-			    (fileInput[i + 7] == 'r') &&
-			    (fileInput[i + 8] == 'e'))
-			{
-			    i = i + 8;
-			    tokens[numOfTokens] = procsym;
-			    numOfTokens++;
-			    continue;
-			}
-
-		    case 'r':
-			if ((fileInput[i + 1] == 'e') &&
-			    (fileInput[i + 2] == 'a') &&
-			    (fileInput[i + 3] == 'd'))
-			{
-			    i = i + 3;
-			    tokens[numOfTokens] = readsym;
-			    numOfTokens++;
-			    continue;
-			}
-
-		    case 't':
-			if ((fileInput[i + 1] == 'h') &&
-			    (fileInput[i + 2] == 'e') &&
-			    (fileInput[i + 3] == 'n'))
-			{
-			    i = i + 3;
-			    tokens[numOfTokens] = thensym;
-			    numOfTokens++;
-			    continue;
-			}
-
-		    case 'v':
-			if ((fileInput[i + 1] == 'a') &&
-			    (fileInput[i + 2] == 'r'))
-			{
-			    i = i + 2;
-			    tokens[numOfTokens] = varsym;
-			    numOfTokens++;
-			    continue;
-			}
-
-		    case 'w':
-			if ((fileInput[i + 1] == 'h') &&
-			    (fileInput[i + 2] == 'i') &&
-			    (fileInput[i + 3] == 'l') &&
-			    (fileInput[i + 4] == 'e'))
-			{
-			    i = i + 4;
-			    tokens[numOfTokens] = whilesym;
-			    numOfTokens++;
-			    continue;
-			}
-			else if ((fileInput[i + 1] == 'r') &&
-			    (fileInput[i + 2] == 'i') &&
-			    (fileInput[i + 3] == 't') &&
-			    (fileInput[i + 4] == 'e'))
-			{
-			    i = i + 4;
-			    tokens[numOfTokens] = writesym;
-			    numOfTokens++;
-			    continue;
-			}
-
-		    default:
-			break;
-		}
-	    }
-    
-	}
+    fclose(input);
 }
+
+char *singleToken(char cleanInput[]){ //Trims the clean input to only 1 token
+    tflag = 0;
+    char *single;
+    single = (char*)malloc(numOfChars);
+    int i = 0;
+    singleLength = 1;
+    do{
+        switch (cleanInput[currentPos]) {
+
+            //The following cases all have the same output.
+            case '(':
+            case ')':
+            case ',':
+            case '.':
+            case ';':
+            case '+':
+            case '-':
+            case '*':
+            case '/':
+                 singleLength = 1;
+                if (i != 0) {
+                    return (char*)single;
+                }else{
+                    single[i] = cleanInput[currentPos];
+                    currentPos++;
+                    return (char*)single;
+                }
+
+            //The following cases have specific output based on the next char
+            case '<':
+                singleLength = 1;
+                if (i != 0) {
+                    return (char*)single;
+                }else{
+                    if (cleanInput[currentPos+1] != '=' || cleanInput[currentPos+1] != '>') {
+                        single[i] = cleanInput[currentPos];
+                        currentPos++;
+                        return (char*)single;
+                    }else{
+                        single[i] = cleanInput[currentPos];
+                        single[i+1] = cleanInput[currentPos+1];
+                        currentPos = currentPos+2;
+                        return (char*)single;
+                    }
+                }
+
+            case ':':
+                singleLength = 2;
+                if (i != 0) {
+//                    singleLength = 1;
+                    return (char*)single;
+                }else{
+                    if (cleanInput[currentPos+1] != '=') {
+                        single[i] = cleanInput[currentPos];
+                        currentPos++;
+                        singleLength = 2;
+                        return (char*)single;
+                    }else{
+                        single[i] = cleanInput[currentPos];
+                        single[i+1] = cleanInput[currentPos+1];
+                        currentPos = currentPos+2;
+                        singleLength = 1;
+                        return (char*)single;
+                    }
+                }
+            case '>':
+                singleLength = 1;
+                if (i != 0) {
+                    return (char*)single;
+                }else{
+                    if (cleanInput[currentPos+1] != '=') {
+                        singleLength = 2;
+                        single[i] = cleanInput[currentPos];
+                        currentPos++;
+                        return (char*)single;
+                    }else{
+                        single[i] = cleanInput[currentPos];
+                        single[i+1] = cleanInput[currentPos+1];
+                        currentPos = currentPos+2;
+                        return (char*)single;
+                    }
+                }
+
+            //Skips the following cases
+            case '\t':
+                if(strcmp(single, "\t") == 0){
+                    tflag = 1;
+                    currentPos++;
+                    return (char*)single;
+                }
+                currentPos++;
+                return (char*)single;
+            case '\r':
+                if(strcmp(single, "\r") == 0){
+                    tflag = 1;
+                    currentPos++;
+                    return (char*)single;
+                }
+                currentPos++;
+                return (char*)single;
+            case '\n':
+                if(strcmp(single, "\n") == 0){
+                    tflag = 1;
+                    currentPos++;
+                    return (char*)single;
+                }
+                currentPos++;
+                return (char*)single;
+
+
+            //Base case to handle all letters.
+            case 'a'...'z':
+            case 'A'...'Z':
+            case '1'...'9':
+                single[i] = cleanInput[currentPos];
+                currentPos++;
+                i++;
+                singleLength = 1;
+                break;
+            default:
+                tflag = 1;
+                currentPos++;
+                return (char*)single;
+
+        }
+    }while(cleanInput[currentPos] != ' ');
+
+    currentPos++;
+    return (char*)single;
+}
+
+
