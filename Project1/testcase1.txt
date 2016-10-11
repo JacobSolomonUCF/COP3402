@@ -1,1 +1,10 @@
-x := y + z;
+var x;
+
+x := y + (a + b);
+while x
+    procedure (g)
+    if (x == 0)
+	else
+	    
+end
+.
