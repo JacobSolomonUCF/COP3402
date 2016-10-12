@@ -12,6 +12,10 @@ Matthew Carlino:
   Cleaned up code that we weren't using
 
 Jacob Solomon:
+  Initial --clean function
+  Initial --source function
+  Initial singleToken function
+  Initial tokenID function
 
 Joseph Freeman:
 
