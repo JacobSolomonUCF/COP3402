@@ -6,6 +6,10 @@
 // Ryan Rossbach
 
 Matthew Carlino:
+  Wrote test cases
+  Tested code and debugged using linux's gdb tool
+  Helped fix a bug that caused extraneous characters to print
+  Cleaned up code that we weren't using
 
 Jacob Solomon:
 
