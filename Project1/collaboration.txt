@@ -24,5 +24,8 @@ Joseph Freeman:
   Cleaned up code 
 
 Alex Arwin:
+  Helped fix bugs
+  Worked with Trent in searching for problem areas
+  Added some whitespace/cleaned up code
 
 Ryan Rossbach: 
