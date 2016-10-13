@@ -18,6 +18,10 @@ Jacob Solomon:
   Initial tokenID function
 
 Joseph Freeman:
+  Initial isID function
+  Helped with bug fixes
+  Added code to identify errors
+  Cleaned up code 
 
 Alex Arwin:
 
