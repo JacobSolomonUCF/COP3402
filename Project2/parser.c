@@ -192,3 +192,81 @@ void rel_op()
 	default:
 	    error();
 }
+
+// Still have a few functions I need to finish / double check
+// Think the majority of them are pretty set though
+
+// expression ::= [ "+"| "-" ] term { ("+" | "-") term } .
+void expression() {
+
+    if(tok != plussym || tok != minussym) return;
+    advance();
+    term(); // ?
+    while(tok == plussym || tok == minussym) {
+        advance();
+        if(tok != identsym) error();
+        advance();
+    }
+    term(); // ?
+    advance();
+}
+
+// term ::= factor { ( "*" | "/" ) factor } .
+void term() {
+    factor();
+    while(tok == multsym || tok == slashsym) {
+        factor();
+        advance();
+    }
+}
+
+// factor ::= ident | number | "(" expression ")" .
+void factor() {
+    if(tok == identsym)
+        advance();
+    if(tok == numsym)
+        advance();
+    if(tok == lparensym) {
+        advance();
+        expression();
+        advance();
+        if(tok != rparensym)
+            error();
+    }
+
+    advance();
+
+}
+
+// number ::= digit {digit}.
+void number() {
+
+    digit();
+    while(false) {
+        digit();
+    }
+
+}
+
+//ident ::= letter {letter | digit}.
+void ident() {
+    letter();
+
+}
+
+//digit ::= “0” | “1” | “2” | “3” | “4” | “5” | “6” | “7” | “8” | “9” .
+void digit() {
+
+   if(isdigit(tok))
+        advance();
+
+}
+
+//letter ::= “a” | “b” | ... | “y” | “z” | “A” | “B” | ... | “Y” | “Z”.
+void letter() {
+
+    if(isalpha(tok))
+        advance();
+
+}
+
