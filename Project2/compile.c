@@ -10,6 +10,23 @@
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
+#include "tokens.h"
+
+// function prototypes
+void program();
+void block();
+void statement();
+void condition();
+void expression();
+void term();
+void factor();
+void number();
+void ident();
+void digit();
+void letter();
+void error();
+
+token_type tok;
 
 int main(void)
 {
@@ -29,7 +46,7 @@ void program()
     advance();
     block();
     if (tok != periodsym)
-        error();
+        error(9);
     // advance();
     // printf("Tiny PL/0 program is syntactically correct\n");
 }
@@ -42,18 +59,18 @@ void block()
         do {
             advance();
             if(tok != identsym)     // Error: expected identifer in constant declaration
-                error();
+                error(4);
             advance();
             if(tok != eqsym)
-                error();            // Expected '=' after 
+                error(3);            // Expected '=' after 
             advance();
-            if(tok !+ numbersym)
-                error();
+            if(tok != numbersym)
+                error(2);
             advance();
-        } while(tok == commasym)
+        } while(tok == commasym);
 
         if(tok != semicolonsym)
-            error();
+            error(5);
         advance();
     }
 
@@ -62,11 +79,11 @@ void block()
           advance();
 
           if(tok != identsym)
-                error();            // Expected identifer in variable declaration
-        } while(tok == commasym)
+                error(4);            // Expected identifer in variable declaration
+        } while(tok == commasym);
 
         if(tok != semicolonsym)
-            error();                // Expected ';' at the end of variable declaration
+            error(5);                // Expected ';' at the end of variable declaration
         advance();
     }
 
@@ -74,7 +91,7 @@ void block()
         advance();
 
         if(tok != identsym)
-            error();
+            error(6);
         advance();
 
         if(tok != semicolonsym)
@@ -91,69 +108,69 @@ void block()
 
 }
 
-void const_declaration()
-{
-    if (tok != constsym)
-        return;
-    advance();
-
-    if (tok != identsym)
-        error();
-    advance();
-    ident();
-
-    if (tok != equalsym) // "="
-        error();
-    advance();
-
-    if (tok != numbersym)
-        error();
-    advance();
-
-    while (tok == commasym) {
-        advance();
-
-        if (tok != identsym)
-            error();
-        advance();
-        ident();
-
-        if (tok != equalsym) // "="
-            error();
-        advance();
-
-        if (tok != numbersym)
-            error();
-        advance();
-        number();
-    }
-
-    if (tok != semicolonsym)
-        error();
-    advance();
-}
-
-void var_declaration() {
-
-    if (tok != varsym)
-        return;
-    advance();
-
-    if (tok != identsym)
-	error();
-    advance();
-
-    while (tok == commasym) {
-        advance();
-        if (tok != identsym)
-            error();
-        advance();
-    }
-
-    if (tok != semicolonsym)
-        error();
-    advance();
-}
+// void const_declaration()
+// {
+//     if (tok != constsym)
+//         return;
+//     advance();
+// 
+//     if (tok != identsym)
+//         error();
+//     advance();
+//     ident();
+// 
+//     if (tok != equalsym) // "="
+//         error(3);
+//     advance();
+// 
+//     if (tok != numbersym)
+//         error();
+//     advance();
+// 
+//     while (tok == commasym) {
+//         advance();
+// 
+//         if (tok != identsym)
+//             error();
+//         advance();
+//         ident();
+// 
+//         if (tok != equalsym) // "="
+//             error(3);
+//         advance();
+// 
+//         if (tok != numbersym)
+//             error();
+//         advance();
+//         number();
+//     }
+// 
+//     if (tok != semicolonsym)
+//         error();
+//     advance();
+// }
+// 
+// void var_declaration() {
+// 
+//     if (tok != varsym)
+//         return;
+//     advance();
+// 
+//     if (tok != identsym)
+// 	error();
+//     advance();
+// 
+//     while (tok == commasym) {
+//         advance();
+//         if (tok != identsym)
+//             error();
+//         advance();
+//     }
+// 
+//     if (tok != semicolonsym)
+//         error();
+//     advance();
+// }
 
 // Appendix D
 void statement()
@@ -161,16 +178,15 @@ void statement()
     if (tok == identsym) {
         advance();
         if (tok != becomessym)
-            error();
+            error(3);
         advance();
-        // need to call advance() in expression
         expression();
     }
 
     else if(tok == callsym) {
         advance();
         if(tok != identsym)
-            error();
+            error(14);
         advance();
     }
 
@@ -193,7 +209,7 @@ void statement()
         condition();
 
         if (tok != thensym)
-            error();
+            error(16);
         advance();
         statement();
     }
@@ -203,7 +219,7 @@ void statement()
         condition();
 
         if (tok != dosym)
-            error();
+            error(18);
         advance();
         statement();
     }
@@ -233,36 +249,28 @@ void condition()
 
     else {
         expression();
-        if(tok != relation())
-            error();
+	
+	// condensed rel_op into this switch statement
+	switch (tok)
+	{
+	    case eqsym:
+		break;
+	    case neqsym:
+		break;
+	    case lessym:
+		break;
+	    case leqsym:
+		break;
+	    case gtrsym:
+		break;
+	    case geqsym:
+		break;
+	    default:
+		error(20);
+	}
         advance();
         expression();
     }
-}
-
-void rel_op()
-{
-    switch(tok)
-	case equalsym:
-	    advance();
-	    return;
-	case neqsym:
-	    advance();
-	    return;
-	case lesssym:
-	    advance();
-	    return;
-	case leqsym:
-	    advance();
-	    return;
-	case gtrsym:
-	    advance();
-	    return;
-	case geqsym:
-	    advance();
-	    return;
-	default:
-	    error();
 }
 
 // Still have a few functions I need to finish / double check
@@ -302,16 +310,17 @@ void factor()
     else if(tok == number())
         advance();
 
-    else if(tok == lparensym) {
+    else if(tok == lparentsym) {
         advance();
         expression();
-        if(tok != rparensym)
-            error();
+        if(tok != rparentsym)
+            error(22);
     }
 
 }
 
 // number ::= digit {digit}.
+// can't be void if being called as a function in factor
 void number()
 {
 
