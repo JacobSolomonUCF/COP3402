@@ -1,5 +1,11 @@
 These are instructions on how to run my code using the makefile:
 
-1) Download and place the makefile, compile.c, lexer.c, and input.pl0 in the same folder on Eustis (or normal folder if using linux and terminal).
+1) Download and place the makefile, compile.c, lexer.c, parser.c and input.pl0 in the same folder on Eustis (or normal folder if using linux and terminal).
 2) On Eustis or in the terminal, run the makefile using "make compile".
 3) now you can run the executable like so: "./compile input.pl0 output.pm0".
+
+The first command line argument is read in and passed to lexer.c which reads the code and generates the output.
+  The output of the lexer is still printed to the screen for visual.
+  The output file of the lexer will go into a file called "lexoutput" which will appear in the folder after running the code.
+  
+The lexer output is then passed to parser.c where it is read into an array.
