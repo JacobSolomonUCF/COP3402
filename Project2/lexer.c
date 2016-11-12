@@ -10,16 +10,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
-
-typedef enum token
-{
-    	nulsym = 1, identsym = 2, numbersym = 3, plussym = 4, minussym = 5,
-    	multsym = 6, slashsym = 7, oddsym = 8, eqsym = 9, neqsym = 10, lessym = 11, leqsym = 12,
-    	gtrsym = 13, geqsym = 14, lparentsym = 15, rparentsym = 16, commasym = 17, semicolonsym = 18,
-    	periodsym = 19, becomessym = 20, beginsym = 21, endsym = 22, ifsym = 23, thensym = 24,
-    	whilesym = 25, dosym = 26, callsym = 27, constsym = 28, varsym = 29, procsym = 30, writesym = 31,
-    	readsym = 32, elsesym = 33
-}token_type;
+#include "tokens.h"
 
 char fileInput[10000];
 
@@ -34,15 +25,13 @@ int singleLength;
 
 // Function Prototype(s)
 void readInput(FILE * input); //Reads input from file
-void printSource(char *argv[]); // print source code when --source used as argv
-char *inputClean(char *argv[], char cleanInput[]); // print source code w/o comments when --clean used as argv
+char *inputClean(char cleanInput[]); // print source code w/o comments when --clean used as argv
 char *singleToken(char cleanInput[]);
 int tokenID(char *token);
 int isID(char c);
 
-int main(int argc, char *argv[])
+FILE* lexer(FILE* input, FILE* lexoutput)
 {
-    FILE * input = fopen(argv[1], "r");
     if (input == NULL)
     {
 	printf("Error in opening the file");
@@ -50,17 +39,27 @@ int main(int argc, char *argv[])
     }
 
     readInput(input); //Reads in the input from file
-    printSource(argv); //Prints the --source
 
     char *cleanInput;
     cleanInput = (char*)malloc(numOfChars);
-    cleanInput = inputClean(argv, cleanInput); //Generates the clean input
+    cleanInput = inputClean(cleanInput); //Generates the clean input
 
-    printf("\ntokens:\n-------\n");
     char *single;
+    char *cleanToken;
+    int i;
     while(currentPos < numOfChars){
+	for (i = 0; i < singleLength; i++)
+	    cleanToken[i] = 0;
         singleLength = 0;
         single = singleToken(cleanInput);
+	*cleanToken = '\0';
+	if (strlen(single) > singleLength) {
+	    for (i = 0; i < singleLength; i++) 
+		cleanToken[i] = single[i];
+	    single = cleanToken;
+	}
+	    
+	    
 
         // exits if identifer is longer than 12 characters
         if(strlen(single) > 12) {
@@ -68,21 +67,13 @@ int main(int argc, char *argv[])
             exit(0);
         }
 
-        int i;
-            if(tflag ==  0){
-                test = tokenID(single);
-                if(test != 0) {
-                    for(i = 0; i < 12; i++)
-			if (i < singleLength)
-			    if(isID(single[i]))
-				printf("%c", single[i]);
-                            else
-                                printf(" ");
-			else
-			printf(" ");
-                    printf("%8d\n",test);
-                }
-            }
+	if(tflag ==  0){
+	    test = tokenID(single);
+	    if(test != 0) {
+		printf("%d\n",test);
+		fprintf(lexoutput, "%d\n", test);
+	    }
+	}
     }
 }
 
@@ -230,32 +221,12 @@ int tokenID(char* token){
 
 }
 
-void printSource(char *argv[]){ //Prints the source input
-    int flag = 0;
-
-    if(argv[2] != NULL && strcmp(argv[2], "--source") == 0){ //Checks for --source in argv
-        flag = 1;
-    }else if(argv[3] != NULL && strcmp(argv[3], "--source") == 0){
-        flag = 1;
-    }
-
-    if(flag == 1){
-        printf("\nsource code:\n------------\n%s",fileInput);
-    }
-}
-
-char *inputClean(char *argv[], char cleanInput[]){ //Trims the comments from source code and prints to terminal if required
+char *inputClean(char cleanInput[]){ //Trims the comments from source code and prints to terminal if required
 
     int flag = 0, i = 0;
     int cflag = 0;
     char *clean;
     clean = (char*)malloc(numOfChars);
-
-    if(argv[2] != NULL && strcmp(argv[2], "--clean") == 0){
-        flag = 1;
-    }else if(argv[3] != NULL && strcmp(argv[3], "--clean") == 0){
-        flag = 1;
-    }
 
     for(i =0; i<numOfChars; i++){
         if(fileInput[i] == '/' && fileInput[i+1] == '*'){ //Checks for start of comment
@@ -277,9 +248,6 @@ char *inputClean(char *argv[], char cleanInput[]){ //Trims the comments from sou
             }
         clean[i] = fileInput[i];
 
-    }
-    if(flag == 1){
-        printf("\nsource code without comments:\n------------\n%s",clean);
     }
 
     return (char*)clean;
@@ -421,7 +389,6 @@ char *singleToken(char cleanInput[]){ //Trims the clean input to only 1 token
 
         }
     }while(cleanInput[currentPos] != ' ');
-
     currentPos++;
     return (char*)single;
 }
