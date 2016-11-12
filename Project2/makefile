@@ -1,2 +1,2 @@
-compile: compile.c lexer.c
-	gcc -o compile compile.c lexer.c
+compile: compile.c lexer.c parser.c
+	gcc -o compile compile.c lexer.c parser.c
