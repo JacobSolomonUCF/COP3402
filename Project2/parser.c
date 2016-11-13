@@ -32,7 +32,6 @@ typedef struct
 
 symbol symbol_table[MAX_SYMBOL_TABLE_SIZE];
 instruction instructions[MAX_SYMBOL_TABLE_SIZE*3];
-token_type tok;
 
 // function prototypes
 void program();
@@ -54,6 +53,8 @@ int getToken();
 // Global Variables
 int fileInput[MAX_SYMBOL_TABLE_SIZE];
 int numOfInstructions = 0;
+int tokenCounter = 0;
+int tok = 0;
 
 
 void parser(FILE* input, FILE* vmoutput)
@@ -67,11 +68,12 @@ void parser(FILE* input, FILE* vmoutput)
     readIn(input); //Reads in the input from file
     
     // main calls program
+    program();
     //program(input, symbol_table, instructions);
     
     // print pm0 code for vm
     int i;
-    for (i = 0; i < numOfInstructions; i++)
+    for (i = 0; i < numOfInstructions-1; i++)
     {
 	fprintf(vmoutput, "%d %d %d\n", instructions[i].op, instructions[i].l, instructions[i].m);
     }
@@ -129,6 +131,7 @@ void block()
 
           if(tok != identsym)
                 error(4);            // Expected identifer in variable declaration
+	  advance();
         } while(tok == commasym);
 
         if(tok != semicolonsym)
@@ -319,7 +322,7 @@ void factor()
 
 void advance()
 {
-    
+	tok = fileInput[tokenCounter++];
 }
 
 void enter()
