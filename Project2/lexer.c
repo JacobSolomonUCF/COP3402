@@ -39,14 +39,17 @@ void lexer(FILE* input, FILE* lexoutput)
     }
 
     readInput(input); //Reads in the input from file
+
     char *cleanInput;
     cleanInput = (char*)malloc(numOfChars);
     cleanInput = inputClean(cleanInput); //Generates the clean input
 
-    char *single;
-    char *cleanToken;
+    char *single = (char*)malloc(numOfChars);
+    char *cleanToken  = (char*)malloc(numOfChars);
     int i;
     while(currentPos < numOfChars){
+	for (i = 0; i < singleLength; i++)
+	    cleanToken[i] = 0;
         singleLength = 0;
         single = singleToken(cleanInput);
 	*cleanToken = '\0';
@@ -69,6 +72,8 @@ void lexer(FILE* input, FILE* lexoutput)
 	    if(test != 0) {
 		printf("%d\n",test);
 		fprintf(lexoutput, "%d\n", test);
+        if(test == 2 || test == 3)
+            fprintf(lexoutput, "%s\n", single);
 	    }
 	}
     }
