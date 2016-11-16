@@ -1,5 +1,10 @@
 // Matthew Carlino
+    Created parser functions
+    Created makefile
+    Created compile.c
+    Changed lexer.c and parser.c to receive file input and output from compile.c
 // Jacob Solomon
 // Joseph Freeman
 // Alex Arwin
-// Ryan Rossbach test cases/inputs
+// Ryan Rossbach 
+    test cases/inputs
