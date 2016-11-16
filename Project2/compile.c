@@ -7,29 +7,45 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include "lexer.h"
+#include "parser.h"
 
 int main(int argc, char* argv[])
 {
-    FILE* input = fopen(argv[1], "r");
-    FILE* output = fopen(argv[2], "w");
-    FILE* lexoutput = fopen("lexoutput", "w");
-    if (input == NULL || output == NULL)
-    {
-	printf("Error in opening the file\n");
-	exit(1);
+    FILE* input;
+    char *inputFileName = malloc(sizeof(char) * 1024); //Input file name
+    strcpy(inputFileName,"empty"); //Setting file name to empty
+    
+    int l = 0 , v = 0, a = 0, i = 0;
+    
+    if(argc != 0){
+        for(i=1; i<argc; i++){
+            if(strcmp(argv[i], "-l") == 0)
+                l = 1;//print singletoken.iden list
+            else if(strcmp(argv[i], "-a") == 0)
+                a = 1;//print assembly code
+            else if(strcmp(argv[i], "-v") == 0)
+                v = 1; //print virtual machine exec. trace
+            else
+                strcpy(inputFileName,argv[i]); //optional input filename, if no filename we assume input is input.pl0
+        }
+        
+        if (strcmp(inputFileName, "empty") == 0) {
+            input = fopen("input.pl0","r");
+        }else{
+            input = fopen(inputFileName,"r");
+        }
+        
+        printf("\nEntering Lexer\n");
+        lexer(l, input); //To lexer
+        printf("Finished Lexer\n\n");
+        
+        printf("Entering Parser\n");
+        parser(a);
+        printf("Finished Parser\n");
+        
+    
     }
-    
-    printf("Entering lexer\n");
-    // lexoutput will contain the lexed token values for the parser
-    lexer(input, lexoutput);
-    fclose(lexoutput);
-    lexoutput = fopen("lexoutput", "r");
-    printf("Returned from lexer\n");
-    printf("Entering parser\n");
-    parser(lexoutput, output); 
-    printf("Returned from parser\n");
-    
-    printf("Back in compile.c\n");
-    
     return 0;
 }
