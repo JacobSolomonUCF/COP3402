@@ -5,6 +5,9 @@
     Changed lexer.c and parser.c to receive file input and output from compile.c
 // Jacob Solomon
 // Joseph Freeman
+    Worked on parser functions
+    Created correct input files 0-4
+    Worked on bug fixes
 // Alex Arwin
 // Ryan Rossbach 
     test cases/inputs
