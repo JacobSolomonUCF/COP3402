@@ -72,10 +72,12 @@ void lexer(int l, FILE *input)
         if(tflag ==  0){
             test = tokenID(single);
             if(test != 0) {
-                //printf("%d\n",test);
+                if (l == 1)
+                    printf("%d\n",test);
                 fprintf(lexoutput, "%d\n", test);
                 if(test == 2 || test == 3){
-                    //printf("%s\n",single);
+                    if (l == 1)
+                        printf("%s\n",single);
                     fprintf(lexoutput, "%s\n", single);
                 }
             }
