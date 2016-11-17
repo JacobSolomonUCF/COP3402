@@ -36,10 +36,16 @@ typedef struct{
     char name[13];
 }sToken;
 
+typedef enum {RET, NEG, ADD, SUB, MUL, DIV, ODD, MOD, EQL, NEQ, LSS, LEQ, GTR, GEQ} OPER;
+typedef enum CMDS {SSS, LIT, OPR, LOD, STO, CAL, INC, JMP, JPC, SIO} CmdIndex;
+
+
 symbol symbol_table[MAX_SYMBOL_TABLE_SIZE];
 instruction instructions[MAX_SYMBOL_TABLE_SIZE*3];
 sToken singletoken;
 
+int count = 0;
+int addr = 0;
 int cx = 0; //Code Index
 int sx = 0; //Symbol Table Index
 int ctemp = 0;
@@ -70,12 +76,22 @@ void parser(int flag)
         exit(0);
     }
     
-    //readIn(input); //Reads in the input from file
     
     // main calls program
     program();
     
     printf("\nProgram is Correct\n");
+    
+    if(flag == 1)
+        printf("\n==============Assembly Code==============\nOP\tL\tM\n");
+    fprintf(output, "\n==============Assembly Code==============\nOP\tL\tM\n");
+    
+    for(int j = 0; j < count;j++){
+        if(flag == 1){
+            printf("%d\t%d\t%d\n",instructions[j].op, instructions[j].l, instructions[j].m);
+        }
+        fprintf(output,"%d\t%d\t%d\n",instructions[j].op, instructions[j].l, instructions[j].m);
+    }
     
     
     fclose(input);
@@ -97,11 +113,9 @@ void advance(){
         == 3) {
         fscanf(input ,"%s", singletoken.name);
     }
+    count++;
 }
 void block(){
-    
-    //Start
-    emit(7, 0, 0);
     
     if(singletoken.id == constsym) {
         do {
@@ -114,8 +128,8 @@ void block(){
             advance();
             if(singletoken.id != numbersym)
                 error(2);
-	    if (get_symbol(singletoken.name) == NULL)
-            	put_symbol(1, singletoken.name, singletoken.id, 0, 0); //Enters into the sym table
+            if (get_symbol(singletoken.name) == NULL)
+                put_symbol(1, singletoken.name, singletoken.id, 0, 0); //Enters into the sym table
             advance();
         } while(singletoken.id == commasym);
         
@@ -133,8 +147,8 @@ void block(){
                 if(singletoken.id != identsym)
                     error(4);// Expected identifer in variable declaration
                 num_vars++;
-		if (get_symbol(singletoken.name) == NULL)
-                	put_symbol(2, singletoken.name, 0, 0, 3+num_vars);
+                if (get_symbol(singletoken.name) == NULL)
+                    put_symbol(2, singletoken.name, 0, 0, 3+num_vars);
                 advance();
             }while(singletoken.id == commasym);
             
@@ -143,8 +157,7 @@ void block(){
             advance();
         }
         //EMIT
-        emit(6, 0, 4+num_vars);
-        
+        emit(INC, 0, 4+num_vars);
     }
     
     while(singletoken.id == procsym) {
@@ -208,7 +221,7 @@ void statement()
             advance();
         
         ctemp = cx;
-        emit(8, 0, 0);
+        emit(JPC, 0, 0);
         statement();
         instructions[ctemp].m= cx;
     }
@@ -219,14 +232,14 @@ void statement()
         condition();
         cx2 = cx;
         
-        emit(8, 0, 0);
+        emit(JPC, 0, 0);
         if (singletoken.id != dosym)
             error(18);
         else
             advance();
         
         statement();
-        emit(7, 0, cx1);
+        emit(JMP, 0, cx1);
         instructions[cx2].m = cx;
     }
     
@@ -261,16 +274,22 @@ void condition()
         switch (singletoken.id)
         {
             case eqsym:
+                emit(OPR, 0, EQL);
                 break;
             case neqsym:
+                emit(OPR, 0, NEQ);
                 break;
             case lessym:
+                emit(OPR, 0, LSS);
                 break;
             case leqsym:
+                emit(OPR, 0, LEQ);
                 break;
             case gtrsym:
+                emit(OPR, 0, GTR);
                 break;
             case geqsym:
+                emit(OPR, 0, GEQ);
                 break;
             default:
                 error(20);
@@ -288,7 +307,7 @@ void expression()
         advance();
         term();
         if(addop == minussym){
-            emit(2, 0, 1);
+            emit(OPR, 0, NEQ);
         }
     }else{
         term();
@@ -298,9 +317,9 @@ void expression()
         advance();
         term();
         if(addop == plussym)
-            emit(2, 0, 2);
+            emit(OPR, 0, ADD);
         else
-            emit(2, 0,3);
+            emit(OPR, 0 ,SUB);
     }
 }
 
@@ -314,9 +333,9 @@ void term()
         advance();
         factor();
         if(mulop == multsym)
-            emit(2, 0, 4);
+            emit(OPR, 0, MUL);
         else
-            emit(2, 0, 5);
+            emit(OPR, 0, DIV);
     }
 }
 void factor()
@@ -440,9 +459,9 @@ void put_symbol(int kind, char name[], int num, int level, int modifier){
 symbol *get_symbol(char name[]) {
     int i;
     for (i = 0; i < sx; i++)
-	if (strcmp(symbol_table[i].name, name) == 0)
-	    return symbol_table; // TODO: return pointer symbol
-	
+        if (strcmp(symbol_table[i].name, name) == 0)
+            return symbol_table; // TODO: return pointer symbol
+    
     return NULL;
 }
 

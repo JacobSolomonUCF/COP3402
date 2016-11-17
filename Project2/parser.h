@@ -20,6 +20,8 @@ void expression();
 void term();
 void factor();
 void error(int error);
+void put_symbol(int kind, char name[], int num, int level, int modifier);
+void emit(int op, int l, int m);
 
 void parser(int flag);
 

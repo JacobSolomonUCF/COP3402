@@ -33,6 +33,10 @@ int isID(char c);
 
 void lexer(int l, FILE *input)
 {
+    
+    if(l == 1)
+        printf("==============List of Tokens==============\n");
+    
     FILE *lexoutput = fopen("lexoutput", "w");
     
     if (input == NULL)
@@ -73,17 +77,19 @@ void lexer(int l, FILE *input)
             test = tokenID(single);
             if(test != 0) {
                 if (l == 1)
-                    printf("%d\n",test);
+                    printf("%d ",test);
                 fprintf(lexoutput, "%d\n", test);
                 if(test == 2 || test == 3){
                     if (l == 1)
-                        printf("%s\n",single);
+                        printf("%s ",single);
                     fprintf(lexoutput, "%s\n", single);
                 }
             }
         }
     }
-    
+    if (l == 1) {
+        printf("\n");
+    }
     fclose(lexoutput);
 }
 
