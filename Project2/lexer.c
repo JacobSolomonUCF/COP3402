@@ -51,8 +51,7 @@ void lexer(int l, FILE *input)
     char *cleanToken  = (char*)malloc(numOfChars);
     int i;
     while(currentPos < numOfChars){
-        for (i = 0; i < singleLength; i++)
-            cleanToken[i] = 0;
+        memset(cleanToken, 0, sizeof(cleanToken));
         singleLength = 0;
         single = singleToken(cleanInput);
         *cleanToken = '\0';
@@ -83,7 +82,6 @@ void lexer(int l, FILE *input)
         }
     }
     
-    fclose(input);
     fclose(lexoutput);
 }
 
