@@ -17,11 +17,11 @@
 
 typedef struct
 {
-    int kind;	// const = 1, var = 2, proc = 3
-    char name[12];  // name up to 11 chars
-    int val;	// number (ASCII value)
-    int level;	// L level
-    int addr;	// M address
+    int kind;	    // const = 1, var = 2, proc = 3
+    char name[13];  // name up to 11 chars
+    int num;	    // number (ASCII value)
+    int level;	    // L level
+    int modifier;	// M address
 }symbol;
 
 typedef struct
@@ -41,6 +41,7 @@ instruction instructions[MAX_SYMBOL_TABLE_SIZE*3];
 sToken singletoken;
 
 int cx = 0; //Code Index
+int sx = 0; //Symbol Table Index
 int ctemp = 0;
 
 FILE *input;
@@ -425,7 +426,12 @@ void error(int error)
     
 }
 void put_symbol(int kind, char name[], int num, int level, int modifier){
-    
+    symbol_table[sx].kind = kind;
+    strcpy(symbol_table[sx].name, name);
+    symbol_table[sx].num = num;
+    symbol_table[sx].level = level;
+    symbol_table[sx].modifier = modifier;
+    sx++;
 }
 
 void emit(int op, int l, int m)
