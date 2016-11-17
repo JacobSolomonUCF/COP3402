@@ -40,6 +40,9 @@ symbol symbol_table[MAX_SYMBOL_TABLE_SIZE];
 instruction instructions[MAX_SYMBOL_TABLE_SIZE*3];
 sToken singletoken;
 
+int cx = 0; //Code Index
+int ctemp = 0;
+
 FILE *input;
 
 void program();
@@ -51,12 +54,14 @@ void expression();
 void term();
 void factor();
 void error(int error);
+void put_symbol(int kind, char name[], int num, int level, int modifier);
+void emit(int op, int l, int m);
 
 
 void parser(int flag)
 {
-    input = fopen("/Users/Jacob/Desktop/Old/Project3COP3402/Project3COP3402/lexoutput", "r");
-    FILE *output = fopen("/Users/Jacob/Desktop/Old/Project3COP3402/Project3COP3402/parseroutput", "w");
+    input = fopen("lexoutput", "r");
+    FILE *output = fopen("parseroutput", "w");
     if (input == NULL)
     {
         printf("Error in opening the file");
@@ -87,11 +92,14 @@ void program(){
 void advance(){
     fscanf(input, "%d", &singletoken.id);
     if (singletoken.id == 2 || singletoken.id
-         == 3) {
+        == 3) {
         fscanf(input ,"%s", singletoken.name);
     }
 }
 void block(){
+    
+    //Start
+    emit(7, 0, 0);
     
     if(singletoken.id == constsym) {
         do {
@@ -104,6 +112,7 @@ void block(){
             advance();
             if(singletoken.id != numbersym)
                 error(2);
+            put_symbol(1, singletoken.name, singletoken.id, 0, 0); //Enters into the sym table
             advance();
         } while(singletoken.id == commasym);
         
@@ -113,17 +122,25 @@ void block(){
     }
     
     if(singletoken.id == varsym) {
-        do {
-            advance();
+        int num_vars = 0;
+        if(singletoken.id == varsym){
+            do {
+                advance();
+                
+                if(singletoken.id != identsym)
+                    error(4);// Expected identifer in variable declaration
+                num_vars++;
+                put_symbol(2, singletoken.name, 0, 0, 3+num_vars);
+                advance();
+            }while(singletoken.id == commasym);
             
-            if(singletoken.id != identsym)
-                error(4);            // Expected identifer in variable declaration
+            if(singletoken.id != semicolonsym)
+                error(5);                // Expected ';' at the end of variable declaration
             advance();
-        } while(singletoken.id == commasym);
+        }
+        //EMIT
+        emit(6, 0, 4+num_vars);
         
-        if(singletoken.id != semicolonsym)
-            error(5);                // Expected ';' at the end of variable declaration
-        advance();
     }
     
     while(singletoken.id == procsym) {
@@ -148,7 +165,7 @@ void block(){
 }
 void statement()
 {
-    if (singletoken.id == identsym) {
+    if (singletoken.id == identsym) { //TODO generate emit for ident
         advance();
         if (singletoken.id != becomessym)
             error(3);
@@ -183,18 +200,30 @@ void statement()
         
         if (singletoken.id != thensym)
             error(16);
-        advance();
+        else
+            advance();
+        
+        ctemp = cx;
+        emit(8, 0, 0);
         statement();
+        instructions[ctemp].m= cx;
     }
     
     else if (singletoken.id == whilesym) {
+        int cx1 = cx, cx2;
         advance();
         condition();
+        cx2 = cx;
         
+        emit(8, 0, 0);
         if (singletoken.id != dosym)
             error(18);
-        advance();
+        else
+            advance();
+        
         statement();
+        emit(7, 0, cx1);
+        instructions[cx2].m = cx;
     }
     
     else if (singletoken.id == readsym) {
@@ -202,6 +231,9 @@ void statement()
         if (singletoken.id != identsym)
             error(0);
         advance();
+        
+        emit(9, 0, 1);
+        
     }
     
     else if (singletoken.id == writesym) {
@@ -246,23 +278,41 @@ void condition()
 
 void expression()
 {
-    
-    if(singletoken.id == plussym || singletoken.id == minussym)
-        advance();
-    term();
-    while(singletoken.id == plussym || singletoken.id == minussym) {
+    int addop = 0;
+    if(singletoken.id == plussym || singletoken.id == minussym){
+        addop = singletoken.id;
         advance();
         term();
+        if(addop == minussym){
+            emit(2, 0, 1);
+        }
+    }else{
+        term();
+    }
+    while(singletoken.id == plussym || singletoken.id == minussym) {
+        addop = singletoken.id;
+        advance();
+        term();
+        if(addop == plussym)
+            emit(2, 0, 2);
+        else
+            emit(2, 0,3);
     }
 }
 
 void term()
 {
+    int mulop;
     factor();
     
     while(singletoken.id == multsym || singletoken.id == slashsym) {
+        mulop = singletoken.id;
         advance();
         factor();
+        if(mulop == multsym)
+            emit(2, 0, 4);
+        else
+            emit(2, 0, 5);
     }
 }
 void factor()
@@ -271,7 +321,7 @@ void factor()
     if(singletoken.id == identsym)
         advance();
     
-    else if(singletoken.id == numbersym)
+    else if(singletoken.id == numbersym) //TODO Generate emit code
         advance();
     
     else if(singletoken.id == lparentsym) {
@@ -373,6 +423,17 @@ void error(int error)
     
     exit(0);
     
+}
+void put_symbol(int kind, char name[], int num, int level, int modifier){
+    
+}
+
+void emit(int op, int l, int m)
+{
+    instructions[cx].op = op; // opcode
+    instructions[cx].l = l; // lexicographical level
+    instructions[cx].m = m; // modifier
+    cx++;
 }
 
 
