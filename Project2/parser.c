@@ -56,6 +56,7 @@ void term();
 void factor();
 void error(int error);
 void put_symbol(int kind, char name[], int num, int level, int modifier);
+symbol *get_symbol(char name[]);
 void emit(int op, int l, int m);
 
 
@@ -432,6 +433,15 @@ void put_symbol(int kind, char name[], int num, int level, int modifier){
     symbol_table[sx].level = level;
     symbol_table[sx].modifier = modifier;
     sx++;
+}
+
+symbol *get_symbol(char name[]) {
+    int i;
+    for (i = 0; i < sx; i++)
+	if (strcmp(symbol_table[i].name, name) == 0)
+	    return symbol_table; // TODO: return pointer symbol
+	
+    return NULL;
 }
 
 void emit(int op, int l, int m)
