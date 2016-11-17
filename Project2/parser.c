@@ -114,7 +114,8 @@ void block(){
             advance();
             if(singletoken.id != numbersym)
                 error(2);
-            put_symbol(1, singletoken.name, singletoken.id, 0, 0); //Enters into the sym table
+	    if (get_symbol(singletoken.name) == NULL)
+            	put_symbol(1, singletoken.name, singletoken.id, 0, 0); //Enters into the sym table
             advance();
         } while(singletoken.id == commasym);
         
@@ -132,7 +133,8 @@ void block(){
                 if(singletoken.id != identsym)
                     error(4);// Expected identifer in variable declaration
                 num_vars++;
-                put_symbol(2, singletoken.name, 0, 0, 3+num_vars);
+		if (get_symbol(singletoken.name) == NULL)
+                	put_symbol(2, singletoken.name, 0, 0, 3+num_vars);
                 advance();
             }while(singletoken.id == commasym);
             
