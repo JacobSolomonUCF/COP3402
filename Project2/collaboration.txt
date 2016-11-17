@@ -4,6 +4,10 @@
     Created compile.c
     Changed lexer.c and parser.c to receive file input and output from compile.c
 // Jacob Solomon
+    Modified lexer
+    Created symbol table
+    Created emit function
+    Formatted output
 // Joseph Freeman
     Worked on parser functions
     Created correct input files 0-4
