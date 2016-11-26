@@ -13,5 +13,7 @@
     Created correct input files 0-4
     Worked on bug fixes
 // Alex Arwin
+    worked on some bug fixes
+    tried test cases
 // Ryan Rossbach 
     test cases/inputs
