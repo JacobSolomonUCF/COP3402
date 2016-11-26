@@ -2,4 +2,6 @@
 // Jacob Solomon
 // Joseph Freeman
 // Alex Arwin
+  --attempted bug fixes
+  --tried testcases
 // Ryan Rossbach
