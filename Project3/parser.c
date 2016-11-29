@@ -77,7 +77,8 @@ void parse() {
     }
     program();
 
-    for (int i=0; i<cx-1;i++) { //Ouputs to file
+    int i;
+    for (i=0; i<cx-1;i++) { //Ouputs to file
         if(i != 0)
         	fprintf(ofp, "\n");
         fprintf(ofp, "%d %d %d", code[i].op, code[i].l, code[i].m);
@@ -494,11 +495,11 @@ void emit(int op, int l, int m) {
 
 //This enters a symbol into the table
 void enterToSymbolTable(int k, int *ptx, int *pdx, int lev) {
-    int len;
+    int len, i;
     (*ptx)++;                       //Table index++
     char *name = singToken.name;    //Last Ident
     len = strlen(singToken.name);
-    for (int i=0;i<=len;i++) {
+    for (i=0;i<=len;i++) {
         table[*ptx].name[i]=*name;
         name++;
     }
