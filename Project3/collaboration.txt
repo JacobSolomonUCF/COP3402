@@ -1,5 +1,7 @@
 // Matthew Carlino
 // Jacob Solomon
+  -Code Generation
+  -Testing of Parser
 // Joseph Freeman
 // Alex Arwin
 // Ryan Rossbach 
