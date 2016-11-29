@@ -77,8 +77,10 @@ void parse() {
     }
     program();
 
-    for (int i=0; i<cx;i++) { //Ouputs to file
-        fprintf(ofp, "%d %d %d\n", code[i].op, code[i].l, code[i].m);
+    for (int i=0; i<cx-1;i++) { //Ouputs to file
+        if(i != 0)
+        	fprintf(ofp, "\n");
+        fprintf(ofp, "%d %d %d", code[i].op, code[i].l, code[i].m);
     }
     fclose(ifp);
     fclose(ofp);
@@ -245,7 +247,7 @@ void statement(int level, int *ptx) {
         
         expression(level, ptx);
         if (temp !=0)
-            emit(4, level-table[temp ].level, table[temp ].addr); //STO
+            emit(4, level-table[temp].level, table[temp ].addr); //STO
     }
     else if (singToken.tokenID==callsym) {
         advance();
@@ -257,7 +259,7 @@ void statement(int level, int *ptx) {
             if(temp ==0)
                 error(11);
             else if (table[temp ].kind==3)
-                emit(5,level-table[temp ].level, table[temp ].addr); //CAL
+                emit(5,level-table[temp ].level, table[temp ].addr-1); //CAL
             else
                 error(15);
             
@@ -324,7 +326,8 @@ void statement(int level, int *ptx) {
     else if (singToken.tokenID == writesym) {
         advance();
         expression(level, ptx);
-        emit(9,0,1); //SIO#1
+        emit(9,0,0); //SIO#1
+        emit(9,0,2);
     }
     
     //read needs to read and STO

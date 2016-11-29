@@ -1,5 +1,18 @@
-var x, y;
+var x;
+
+procedure A;
+  begin
+    x := 22;
+  end;
+
+procedure B;
+  begin
+    call A;
+    x := 33;
+  end;
+
 begin
-  x := 3;       /* This is := a % comment. */ x := 4;
-  x := y + 56;
+  x := 11;
+  call B;
+  write x;
 end.

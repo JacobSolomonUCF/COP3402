@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
         }
         
         if (strcmp(inputFileName, "empty") == 0) {
-            input = fopen("/Users/Jacob/Desktop/School/Fall16/COP3402/XCodeProjects3402/Project3/Project3COP3402/Project3COP3402/input.pl0","r");
+            input = fopen("input.pl0","r");
         }else{
             input = fopen(inputFileName,"r");
         }
