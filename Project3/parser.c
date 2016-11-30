@@ -65,12 +65,8 @@ int cx, diff, kind;
 int lexemeListIndex=0;
 int pastdiff=0;
 
-void parse() {
-
-    FILE* ofp;
-    
+void parse(FILE *ofp) {
     ifp = fopen("lexoutput", "r");
-    ofp = fopen("parserout", "w");
     
     if(ifp == NULL){
         printf("ERROR in opening the file");
@@ -128,6 +124,8 @@ void program() {
     
     if (singToken.tokenID!=periodsym)
         error(9);
+    
+    printf("No errors, program is syntactically correct\n");
 }
 
 void block(int lev, int tx) {
