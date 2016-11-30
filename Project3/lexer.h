@@ -16,6 +16,6 @@ char *inputClean(char cleanInput[]);
 char *singleToken(char cleanInput[]);
 int tokenID(char *token);
 int isID(char c);
-void lexer(int l, FILE *input);
+void lexer(FILE *input);
 
 #endif /* lexer_h */
