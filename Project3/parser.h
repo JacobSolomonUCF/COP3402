@@ -10,7 +10,7 @@
 #define parser_h
 #include "tokens.h"
 
-void parse();
+void parse(FILE *ofp);
 void block(int lev, int tx);
 void constdeclaration(int lev, int *ptx, int *pdx);
 void vardeclaration(int lev, int *ptx, int *pdx);
