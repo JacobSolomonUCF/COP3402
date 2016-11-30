@@ -13,38 +13,20 @@
 
 int main(int argc, char* argv[])
 {
-    FILE* input;
-    char *inputFileName = malloc(sizeof(char) * 1024); //Input file name
-    strcpy(inputFileName,"empty"); //Setting file name to empty
+    FILE *input;
+    FILE *output;
     
-    int l = 0 , v = 0, a = 0, i = 0;
-    
-    if(argc != 0){
-        for(i=1; i<argc; i++){
-            if(strcmp(argv[i], "-l") == 0)
-                l = 1;//print singletoken.iden list
-            else if(strcmp(argv[i], "-a") == 0)
-                a = 1;//print assembly code
-            else if(strcmp(argv[i], "-v") == 0)
-                v = 1; //print virtual machine exec. trace
-            else
-                strcpy(inputFileName,argv[i]); //optional input filename, if no filename we assume input is input.pl0
-        }
-        
-        if (strcmp(inputFileName, "empty") == 0) {
-            input = fopen("input.pl0","r");
-        }else{
-            input = fopen(inputFileName,"r");
-        }
-        
-        printf("\nEntering Lexer\n");
-        lexer(l, input); //To lexer
-        printf("Finished Lexer\n\n");
-        printf("Entering Parser\n");
-        parse();
-        printf("Finished Parser\n");
-        
-    
+    if (argc != 3)
+    {
+	printf("need 2 arguments: input and output\n");
+	exit(1);
     }
+    
+    input = fopen(argv[1], "r");
+    output = fopen(argv[2], "w");
+        
+    lexer(input); // To lexer
+    parse(output); // To parser
+    
     return 0;
 }
